@@ -27,16 +27,7 @@ def solve_recurrences(recs, rvars, init={}):
         evar_recs[lhs] = rhs
         initial_vals[lhs] = init_val
 
-
-    #print(' --- evar_recs --- ')
-    #for k, v in evar_recs.items():
-    #    print(' '*3, k, ' = ', v)
-    #print()
-    # evars converted to functions
-    ##print(' --- fs --- ')
     fs = {evar: Function(evar) for evar in evar_recs.keys()}
-    ##print(' '*3, fs)
-
     # iteration/time variable
     n = symbols('n', integer=True)
     solutions = {'': sympify(1)}
@@ -45,9 +36,7 @@ def solve_recurrences(recs, rvars, init={}):
         if lhs in solutions:
             return solutions[lhs]
 
-        #print(' Solving for ' + lhs, ' with initial condition ', {fs[lhs](0): initial_vals[lhs]} if initial_vals[lhs] != None else None)
         print(' Solving for ' + lhs, ' with initial condition {}'.format(str(fs[lhs](0)) + " = " + str(initial_vals[lhs])))
-        #print('Debug: ', lhs, initial_vals)##
 
         if lhs in [evar for _, evar in evar_recs[lhs]]: # recurrence
             eqn = fs[lhs](n) - sum( coeff * (solve(evar).subs({n: n-1}) if evar != lhs else fs[lhs](n-1)) for coeff, evar in evar_recs[lhs])

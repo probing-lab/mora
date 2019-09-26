@@ -5,7 +5,6 @@ class Update:
     # parse updates
     # takes string "x = P @ p; Q @ q" or x = RV(d, a, b)
     # creates class to deal with substituing powers of variables and moments
-    # eventialy should be moved to parser
     def __init__(self, var, update_string, is_random_var=False, random_var=None):
         self.is_random_var = is_random_var
         self.random_var = random_var
@@ -58,8 +57,6 @@ class UniformVar(RandomVar):
         return (self.u**(k+1)-self.l**(k+1))/((k+1)*(self.u-self.l))
 
 
-#xx = Update(sympify("x"),"x + 1 @ 1/2; x+6 @ 1/2")
-#print(xx.power(4))
 
 def EV(expression):
     if issubclass(type(expression), RandomVar):
