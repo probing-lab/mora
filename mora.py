@@ -3,7 +3,7 @@ from parser import InputParser, OutputParser
 from core import core
 from benchmarks import *
 
-prog = InputParser(example1)
+prog = InputParser(introC)
 
 invariants = core(prog, goal=3)
 

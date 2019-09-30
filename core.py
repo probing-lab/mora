@@ -20,7 +20,6 @@ def core(prog, goal=1, exact=True):
     poly_domain = 'QQ{}'.format(parameters) if exact else 'ZZ{}'.format(parameters)
 
     MBRecs = dict()
-    print("gvS", goal, vars, S)
     while S:
         M = S.pop()
         M_orig = M

@@ -34,9 +34,6 @@ class InputParser:
 
     def _parse_update(self, update_ln):
         var, update = map(str.strip, update_ln.split("="))
-        ###case rnd update
-        #if '@' not in update:
-        #    update += "1@1"
         var = symbols(var)
         self.variables.append(var)
         self.updates[var] = Update(var, update)
