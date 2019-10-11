@@ -1,0 +1,13 @@
+
+f = 0
+x = -1
+y = 1
+s = 0
+while true:
+    u1 = RV(uniform, 0, 2)
+    u2 = RV(uniform, 0, 4)
+    f = 1 @ p; 0 @ 1-p
+    x = x + f*u1 @ 1
+    y = y + f*u2 @ 1
+    s = x + y @ 1
+

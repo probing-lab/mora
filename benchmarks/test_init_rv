@@ -1,0 +1,8 @@
+
+x = RV(uniform, -1, 1)
+y = RV(uniform, -1, 1)
+while true:
+    x = x
+    y = y
+    s = s
+
