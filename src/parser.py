@@ -92,23 +92,23 @@ class OutputParser:
             from diofant import latex
             with open("out/tex_{}".format(program_name),"a+") as f:
                 f.write("Moment based invariants for {}, with $[{}]$ as goal:\n".format(program_name, ", ".join([latex(g) for g in goal])))
-                f.write("Computation took {}s.".format(time))
                 for k in invariants:
                     if k:
                         f.write("\[E[{}] = {}\]\n".format(latex(k), latex(invariants[k])))
+                f.write("Computation time {}s.".format(time))
                 f.write("\n\n")
         elif output_format == "txt":
             from diofant import latex
             with open("out/txt_{}".format(program_name),"a+") as f:
                 f.write("Moment based invariants for {}, with [{}] as goal:\n".format(program_name, ", ".join([str(g) for g in goal])))
-                f.write("Computation took {}s.".format(time))
                 for k in invariants:
                     if k:
                         f.write("\nE[{}] = {}".format(k, invariants[k]))
+                f.write("Computation time {}s.".format(time))
                 f.write("\n\n")
         else:
             print("Moment based invariants for {}, with [{}] as goal:\n".format(program_name, ", ".join([str(g) for g in goal])))
-            print("Computation took {}s.".format(time))
             for k in invariants:
                 if k:
                     print("E[{}] = {}".format(k, invariants[k]))
+            print("Computation time {}s.".format(time))

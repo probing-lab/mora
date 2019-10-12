@@ -1,0 +1,8 @@
+#!/bin/bash
+
+sudo dpkg -i dep/apt/*.deb
+sudo apt update
+sudo apt install python3-pip
+
+pip3 install --no-index --find-links=dep/pip diofant
+pip3 install --no-index --find-links=dep/pip scipy
