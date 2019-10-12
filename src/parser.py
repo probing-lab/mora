@@ -16,9 +16,6 @@ class InputParser:
         self._get_parameters()
 
     def _get_program(self, input):
-        import os##
-        print("DEBUGPATH", os.path.dirname(__file__)+"/../benchmarks/{}".format(input))
-        ##
         if self.input_format == "file":
             from pathlib import Path
             prog = Path("{}".format(input)).read_text()
@@ -32,7 +29,7 @@ class InputParser:
         return prog
 
     def __str__(self):
-        return self.__repr__() + " to do"##
+        return self.__repr__() ## " to do"
 
     def _parse_program(self, txt):
         initials, updates = map(str.strip, txt.split("while true:"))
@@ -88,13 +85,14 @@ class InputParser:
 
 
 class OutputParser:
-    def __init__(self, prog, invariants, output_format="tex"):
+    def __init__(self, prog, invariants, time, output_format="tex"):
         program_name = prog.program_name
         goal = prog.goals
         if output_format == "tex" or output_format == "latex":
             from diofant import latex
             with open("out/tex_{}".format(program_name),"a+") as f:
                 f.write("Moment based invariants for {}, with $[{}]$ as goal:\n".format(program_name, ", ".join([latex(g) for g in goal])))
+                f.write("Computation took {}s.".format(time))
                 for k in invariants:
                     if k:
                         f.write("\[E[{}] = {}\]\n".format(latex(k), latex(invariants[k])))
@@ -103,12 +101,14 @@ class OutputParser:
             from diofant import latex
             with open("out/txt_{}".format(program_name),"a+") as f:
                 f.write("Moment based invariants for {}, with [{}] as goal:\n".format(program_name, ", ".join([str(g) for g in goal])))
+                f.write("Computation took {}s.".format(time))
                 for k in invariants:
                     if k:
                         f.write("\nE[{}] = {}".format(k, invariants[k]))
                 f.write("\n\n")
         else:
             print("Moment based invariants for {}, with [{}] as goal:\n".format(program_name, ", ".join([str(g) for g in goal])))
+            print("Computation took {}s.".format(time))
             for k in invariants:
                 if k:
                     print("E[{}] = {}".format(k, invariants[k]))

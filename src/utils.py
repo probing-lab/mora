@@ -49,10 +49,7 @@ class RandomVar:
     def compute_moment(self, k):
         if self.distribution == 'uniform':
             l, u = self.parameters
-            #
-            ##print("l, u, k, moment: ",l, u, k, (u**(k+1)-l**(k+1))/((k+1)*(u-l)))
             return (u**(k+1)-l**(k+1))/((k+1)*(u-l))
-            #
             from scipy.stats import uniform
             return uniform(loc=l, scale=u-l).moment(k)
 
@@ -69,16 +66,6 @@ class RandomVar:
         else:
             throw("Random distribution not recognised. ")
 
-## obsolete class
-class UniformVar(RandomVar):
-    def __init__(self, l, u):
-        self.l = l
-        self.u = u
-
-    def compute_moment(self, k):
-        return (self.u**(k+1)-self.l**(k+1))/((k+1)*(self.u-self.l))
-
-
 
 def EV(expression):
     if issubclass(type(expression), RandomVar):
@@ -92,6 +79,4 @@ def evar2init(evar):
     return None
 
 def get_exponent_of(var, mono):
-    ##print("ASDFHYTR    ", var, type(var), mono, type(mono))##
-    ##print("ASDFHYTR    ", var, mono, mono.as_poly([var]).monoms()[0][0])##
     return mono.as_poly([var]).monoms()[0][0]
