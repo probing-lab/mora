@@ -1,0 +1,36 @@
+
+
+
+INSTALLATION
+To install dependencies and set up Mora:
+1. Open terminal in in the main mora folder. 
+2. Run "./setup".
+
+
+RERUN EXPERIMENTS
+To rerun experiments from the paper:
+1. Open terminal in in the main 'mora/' folder.
+2. Run "python3 src/run_experiments".
+The results are shown in the terminal as they are computed, and also output in the "out/" folder. Results for each program are stored in separate file called "txt_NAME". For easier viewing, you can concatenate output from all experiments to a single text file 'output_experiments' with:
+3. "cat out/txt_* > output_experiments" 
+
+
+RUN ON OWN PROGRAMS
+
+The easiest way to run Mora on your own program is to create a file contaning the program. The program should follow format as described in the paper (check programs in 'benchmarks' folder). 
+Then run "python3 src/mora.py PATH/TO/YOUR/PROGRAM GOAL_1 [GOAL_2 ...]", with path to your program (either absolute, or relative w.r.t. 'mora/' folder) and one or more goals. Each goal can be either a specific moment, or a number, say k, (in which case k-th moments of all variables are considered as goals). For example, one can run "python3 src/mora.py benchmarks/introA 1 x^2 x^3" to compute expected values of all variables and second and third moments of 'x' in program 'introA'.
+
+Alternatively, from 'mora/src/' folder run 'python3', and 'from mora import mora'.
+Here you will be able to further specify input and output formats.
+
+You can run mora by running following:
+mora(INPUT, GOAL, input_format=INPUT_FORMAT, output_format=OUTPUT_FORMAT)
+
+INPUT: either path to your program (input_format="file"), or your program as a string (input_format="string"). If program from a file is used, path should can be absolute, or relative w.r.t. 'mora/src' folder. 
+GOAL: A goal (or list of goals) as a string (or list of strings.
+INPUT_FORMAT: either "file" or "string", as described above.
+OUTPUT_FORMAT: By default the results are output to the screen after computation, but may be specified to "tex" or "txt", in which case a output file is created in 'out/' folder. "txt" format saves the results in a text file in a simple, readable format, while "tex" output can be inserted directly to a latex document.
+Note that the results are appended to the program output file, so running same program multiple times (possibly with different goals) will store all the results. Simply delete the output file before running mora to only have the last results.
+
+
+

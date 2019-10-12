@@ -85,7 +85,7 @@ class InputParser:
 
 
 class OutputParser:
-    def __init__(self, prog, invariants, time, output_format="tex"):
+    def __init__(self, prog, invariants, time, output_format=" "):
         program_name = prog.program_name
         goal = prog.goals
         if output_format == "tex" or output_format == "latex":
@@ -107,8 +107,8 @@ class OutputParser:
                 f.write("Computation time {}s.".format(time))
                 f.write("\n\n")
         else:
-            print("Moment based invariants for {}, with [{}] as goal:\n".format(program_name, ", ".join([str(g) for g in goal])))
+            print("\nMoment based invariants for {}, with [{}] as goal:".format(program_name, ", ".join([str(g) for g in goal])))
             for k in invariants:
                 if k:
-                    print("E[{}] = {}".format(k, invariants[k]))
+                    print(" E[{}] = {}".format(k, invariants[k]))
             print("Computation time {}s.".format(time))

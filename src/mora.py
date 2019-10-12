@@ -5,7 +5,7 @@ import sys
 from timeit import default_timer as timer
 
 
-def mora(input, goal=1, input_format="file", output_format="tex"):
+def mora(input, goal=1, input_format="file", output_format=""):
 
     start = timer()
 
@@ -22,4 +22,4 @@ def mora(input, goal=1, input_format="file", output_format="tex"):
 if len(sys.argv)>2:
     input = sys.argv[1]
     goal = sys.argv[2:]
-    mora(input, goal=goal, input_format="file", output_format="tex")
+    mora(input, goal=goal, input_format="file", output_format=" ")
