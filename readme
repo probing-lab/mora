@@ -10,8 +10,8 @@ To install dependencies and set up Mora:
 RERUN EXPERIMENTS
 To rerun experiments from the paper:
 1. Open terminal in in the main 'mora/' folder.
-2. Run "python3 src/run_experiments".
-The results are shown in the terminal as they are computed, and also output in the "out/" folder. Results for each program are stored in separate file called "txt_NAME". For easier viewing, you can concatenate output from all experiments to a single text file 'output_experiments' with:
+2. Run "python3.7 src/run_experiments.py".
+The results are shown in the terminal as they are computed, and also output in the "out/" folder. Results for each run are stored in separate file called "txt_NAME_TIMESTAMP". For easier viewing, you can concatenate output from all runs to a single text file 'output_experiments' with:
 3. "cat out/txt_* > output_experiments" 
 
 
@@ -20,7 +20,7 @@ RUN ON OWN PROGRAMS
 The easiest way to run Mora on your own program is to create a file contaning the program. The program should follow format as described in the paper (check programs in 'benchmarks' folder). 
 Then run "python3 src/mora.py PATH/TO/YOUR/PROGRAM GOAL_1 [GOAL_2 ...]", with path to your program (either absolute, or relative w.r.t. 'mora/' folder) and one or more goals. Each goal can be either a specific moment, or a number, say k, (in which case k-th moments of all variables are considered as goals). For example, one can run "python3 src/mora.py benchmarks/introA 1 x^2 x^3" to compute expected values of all variables and second and third moments of 'x' in program 'introA'.
 
-Alternatively, from 'mora/src/' folder run 'python3', and 'from mora import mora'.
+Alternatively, from 'mora/src/' folder run 'python3.7', and 'from mora import mora'.
 Here you will be able to further specify input and output formats.
 
 You can run mora by running following:

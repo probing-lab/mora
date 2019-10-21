@@ -21,9 +21,8 @@ class InputParser:
             prog = Path("{}".format(input)).read_text()
             self.program_name = Path("{}".format(input)).name
         elif self.input_format == "string":
-            import time
             prog = input
-            self.program_name = "string_input_{}".format(time.strftime("%Y%m%d-%H%M%S"))
+            self.program_name = "string_input"
         else:
             raise Exception("Unknown input format: {}. Terminating.".format(self.input_format))
         return prog
@@ -85,30 +84,32 @@ class InputParser:
 
 
 class OutputParser:
-    def __init__(self, prog, invariants, time, output_format=" "):
+    def __init__(self, prog, invariants, computation_time, output_format=" "):
         program_name = prog.program_name
         goal = prog.goals
+        from datetime import datetime
+        from time import strftime
+        timestamp = datetime.now().strftime('%y%m%d-%H%M%S%f')[:-4]
         if output_format == "tex" or output_format == "latex":
             from diofant import latex
-            with open("out/tex_{}".format(program_name),"a+") as f:
-                f.write("Moment based invariants for {}, with $[{}]$ as goal:\n".format(program_name, ", ".join([latex(g) for g in goal])))
+            with open(f"out/tex_{program_name}_{timestamp}","a+") as f:
+                f.write("Moment based invariants for {}, with $[{}]$ as goal.\n".format(program_name, ", ".join([latex(g) for g in goal])))
                 for k in invariants:
                     if k:
                         f.write("\[E[{}] = {}\]\n".format(latex(k), latex(invariants[k])))
-                f.write("Computation time {}s.".format(time))
+                f.write("\nComputation time {}s.".format(computation_time))
                 f.write("\n\n")
         elif output_format == "txt":
-            from diofant import latex
-            with open("out/txt_{}".format(program_name),"a+") as f:
+            with open(f"out/txt_{program_name}_{timestamp}","a+") as f:
                 f.write("Moment based invariants for {}, with [{}] as goal:\n".format(program_name, ", ".join([str(g) for g in goal])))
                 for k in invariants:
                     if k:
-                        f.write("\nE[{}] = {}".format(k, invariants[k]))
-                f.write("Computation time {}s.".format(time))
+                        f.write(f"\nE[{k}] = {invariants[k]}")
+                f.write(f"\n\nComputation time {computation_time}s.")
                 f.write("\n\n")
         else:
-            print("\nMoment based invariants for {}, with [{}] as goal:".format(program_name, ", ".join([str(g) for g in goal])))
+            print(f"\nMoment based invariants for {program_name}, with [{', '.join([str(g) for g in goal])}] as goal:")
             for k in invariants:
                 if k:
                     print(" E[{}] = {}".format(k, invariants[k]))
-            print("Computation time {}s.".format(time))
+            print("Computation time {}s.".format(computation_time))
