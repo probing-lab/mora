@@ -61,7 +61,7 @@ class RandomVar:
             return Rational(moment)
 
         if self.distribution == 'unknown':
-            return "{}_{}".format(self.var_name, k)
+            return f"{self.var_name}_0^{k}"
 
         else:
             throw("Random distribution not recognised. ")
