@@ -98,25 +98,25 @@ class OutputParser:
         from datetime import datetime
         from time import strftime
         timestamp = datetime.now().strftime('%y%m%d-%H%M%S%f')[:-4]
-        if output_format == "tex" or output_format == "latex" or output_format == "eval" or output_format == "exp":
+        if output_format == "tex" or output_format == "latex":
             from diofant import latex
             with open(f"out/{output_format}_{program_name}_{timestamp}","a+") as f:
-                f.write("Moment based invariants for {}, with invariants over $[{}]$.\n".format(program_name, ", ".join([latex(g) for g in goal])))
+                f.write("Moment based invariants for program {}, with invariants over $[{}]$.\n".format(program_name, ", ".join([latex(g) for g in goal])))
                 for k in invariants:
                     if k:
                         f.write("\[E[{}] = {}\]\n".format(latex(k), latex(invariants[k])))
                 f.write("\nComputation time {}s.".format(computation_time))
                 f.write("\n\n")
-        elif output_format == "txt":
+        elif output_format == "txt" or output_format == "eval" or output_format == "exp":
             with open(f"out/{output_format}_{program_name}_{timestamp}","a+") as f:
-                f.write("Moment based invariants for {}, with invariants over [{}]:\n".format(program_name, ", ".join([str(g) for g in goal])))
+                f.write("Moment based invariants for program {}, with invariants over [{}]:\n".format(program_name, ", ".join([str(g) for g in goal])))
                 for k in invariants:
                     if k:
                         f.write(f"\nE[{k}] = {invariants[k]}")
                 f.write(f"\n\nComputation time {computation_time}s.")
                 f.write("\n\n")
         #else:
-        print(f"\nMoment based invariants for {program_name}, with invariants over [{', '.join([str(g) for g in goal])}]:")
+        print(f"\nMoment based invariants for program {program_name}, with invariants over [{', '.join([str(g) for g in goal])}]:")
         for k in invariants:
             if k:
                 print(" E[{}] = {}".format(k, invariants[k]))
