@@ -34,3 +34,5 @@ main
 sudo dpkg -i dep/apt/*.deb
 sudo apt update
 python3.7 -m pip install scipy diofant --no-index --find-links=dep/pip
+
+sudo python3.7 setup.py install
