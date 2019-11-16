@@ -2,4 +2,8 @@
 /out/*
 todo
 /tmpf/*
+.venv
+build
+dist
+*.egg-info
 
