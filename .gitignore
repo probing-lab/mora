@@ -6,4 +6,4 @@ todo
 build
 dist
 *.egg-info
-
+.idea
