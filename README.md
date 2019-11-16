@@ -1,7 +1,4 @@
-
-
-
-*INSTALLATION
+# Installation
 
 To install dependencies and set up Mora:
 1. Open terminal in in the main 'mora/' folder. 
@@ -9,7 +6,7 @@ To install dependencies and set up Mora:
 This process may take up to several minutes. No internet connection is assumed, and there may be some warnings/errors due to redundant installations of dependencies. Please ignore those.
 
 
-*RERUN EXPERIMENTS
+# Rerun Experiments
 
 To rerun experiments from the paper:
 1. Open terminal in in the main 'mora/' folder.
@@ -22,13 +19,13 @@ The results are shown in the terminal as they are computed, and also output in t
 4. You can run any single of the benchmarks using scripts in '/script' folder, e.g. "python3.7 scripts/run_benchmark_stutteringA_2.py" for 'stutteringA' program with goal '2'. Output will be stored as 'txt_NAME_TIMESTAMP' in the 'out' folder.
 
 
-*RUN ON OWN PROGRAMS
+# Run on own programs
 
 The easiest way to run Mora on your own program is to create a file containing the program. The program should follow format as described in the paper. TL;DR version below, also check programs in 'benchmarks' folder for examples. 
 
 1. Open terminal in in the main 'mora/' folder.
 2. Run "python3.7" command.
-3.Run "from mora.mora import mora".
+3. Run "from mora.mora import mora".
 4. You can run mora by running following: "mora(INPUT, GOAL, input_format=INPUT_FORMAT, output_format=OUTPUT_FORMAT)",
 where:
 INPUT: either path to your program (if input_format="file" - default option), or your program as a string (if input_format="string"). If program from a file is used, path should can be absolute, or relative w.r.t. the main 'mora' folder. 
@@ -40,30 +37,35 @@ Outputfiles are saved as "FORMAT_PROGRAM_TIMESTAMP", where FORMAT is either "txt
 For example, one can run "mora('benchmarks/stutteringA', goal=[1, 'x^2', 'x^3'])" to compute expected values of all variables and second and third moments of 'x' in program 'stutteringA' and output to screen.
 
 
-*TL;DR PROGRAM MODEL
+# TL;DR Program model
 Program consist of initial assignments (one per line), loop line "while true:", random variables, and variable updates (one line per variable). 
+
 Initial assignments:
-  format:  var = value
-  comment: not all variables have to have initial value specified
-  example: x = 123
+    - format:  var = value
+    - comment: not all variables have to have initial value specified
+    - example: x = 123
+
 Random variables:
-  format:  var = RV(distribution, parameter1, [parameter2, ...])
-  comment: distributions supported at the moment are uniform and gauss 
-  example: u = RV(uniform, 0, 1)
+    - format:  var = RV(distribution, parameter1, [parameter2, ...])
+    - comment: distributions supported at the moment are uniform and gauss 
+    - example: u = RV(uniform, 0, 1)
+
 Variable updates:
-  format:  var = option1 @ probability1; option2 @ probability2 ...
-  comment: last probability can be omitted, it's assumed to be whatever values is needed for probabilities to sum up to 1.
-  comment: variables can depend only on previous variables non-linearly, and on itself linearly - e.g. (x = x + 1 followed by y = y + x^2) is allowed but (x = x + y followed by y = y + 1), or (x = x^2) are not.
-  example: x = x @ 1/2; x + u
+    - format:  var = option1 @ probability1; option2 @ probability2 ...
+    - comment: last probability can be omitted, it's assumed to be whatever values is needed for probabilities to sum up to 1.
+    - comment: variables can depend only on previous variables non-linearly, and on itself linearly - e.g. (x = x + 1 followed by y = y + x^2) is allowed but (x = x + y followed by y = y + 1), or (x = x^2) are not.
+    - example: x = x @ 1/2; x + u
+
 An example program would be:
 
+```
 x=0
 while true:
     u = RV(uniform, 0, b)
     g = RV(gauss, 0, 1)
     x = x - u @ 1/2; x + u @ 1/2
     y = y + x + g
-
+```
 
 
 
