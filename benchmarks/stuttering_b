@@ -12,4 +12,3 @@ while true:
     x = x + f*v
     y = y + f*w
     s = x + y
-

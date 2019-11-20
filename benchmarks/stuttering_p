@@ -10,4 +10,3 @@ while true:
     x = x + f*u1 @ 1
     y = y + f*u2 @ 1
     s = x + y @ 1
-

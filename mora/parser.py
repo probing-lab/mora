@@ -107,7 +107,7 @@ class OutputParser:
                         f.write("\[E[{}] = {}\]\n".format(latex(k), latex(invariants[k])))
                 f.write("\nComputation time {}s.".format(computation_time))
                 f.write("\n\n")
-        elif output_format == "txt" or output_format == "eval" or output_format == "exp":
+        elif output_format == "text" or output_format == "eval" or output_format == "exp":
             with open(f"out/{output_format}_{program_name}_{timestamp}","a+") as f:
                 f.write("Moment based invariants for program {}, with invariants over [{}]:\n".format(program_name, ", ".join([str(g) for g in goal])))
                 for k in invariants:
