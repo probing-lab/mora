@@ -44,7 +44,7 @@ def main():
 
     for benchmark in args.benchmarks:
         for goal in args.goals:
-            mora(benchmark, goal=goal, input_format="file", output_format=args.output_format)
+            mora(benchmark, goal=goal, output_format=args.output_format)
 
 
 if __name__ == "__main__":

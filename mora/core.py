@@ -1,25 +1,27 @@
-from diofant import ( symbols, prod, Function, simplify, sympify, rsolve )
-from mora.utils import *
-from mora.parser import InputParser
-from mora.solver import solve_recurrences
+from diofant import prod, Symbol
+from mora.utils import Update
+from .solver import solve_recurrences
+from typing import List, Dict
 
 
-def core(prog, goal=1, exact=True):
-    """
-    INPUT:
-    InputParser prog
-    int goal
-    """
-    vars = prog.variables
+class Program:
+    def __init__(self):
+        self.name: str = ""
+        self.source: str = ""
+        self.variables: List[Symbol] = []
+        self.initial_values: Dict[Symbol, Update] = {}
+        self.updates: Dict[Symbol, Update] = {}
+        self.goals: List[int] = []
+
+
+def core(program: Program, goal: int = 1):
+    vars = program.variables
     rvars = vars[::-1]
-    initial = prog.initial_values
-    parameters = prog.parameters
-    updates = prog.updates
+    initial = program.initial_values
+    updates = program.updates
 
     S = set_goal(goal, vars)
-    prog.goals = {s for s in S}
-
-    poly_domain = 'QQ{}'.format(parameters) if exact else 'ZZ{}'.format(parameters)
+    program.goals = {s for s in S}
 
     MBRecs = dict()
     while S:
@@ -51,14 +53,6 @@ def core(prog, goal=1, exact=True):
 
 def set_goal(goal, vars):
     print("setting goal: ", goal)
-    if type(goal) == int or (type(goal) == str and goal.isdigit()):
-        goal = int(goal)
-        S = {x**goal for x in vars}
-        return S
-    elif type(goal) == str:
-        return {sympify(goal)}
-    elif type(goal) == list:
-        S = set()
-        for g in goal:
-            S = S.union(set_goal(g, vars))
-        return S if S else set_goal(1, vars)
+    goal = int(goal)
+    S = {x**goal for x in vars}
+    return S
