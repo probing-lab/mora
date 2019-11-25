@@ -8,6 +8,7 @@ class Program:
     def __init__(self):
         self.name: str = ""
         self.source: str = ""
+        self.loop_condition: str = ""
         self.variables: List[Symbol] = []
         self.initial_values: Dict[Symbol, Update] = {}
         self.updates: Dict[Symbol, Update] = {}
@@ -28,9 +29,9 @@ def core(program: Program, goal: int = 1):
         M = S.pop()
         M_orig = M
         M = M.as_poly(rvars)
-        for i, var in enumerate(rvars):
+        for var in rvars:
             M = M.as_poly(var)
-            terms = [ (coeff*var**mono[0]).as_poly(var) for coeff, mono in zip(M.coeffs(), M.monoms())]
+            terms = [(coeff*var**mono[0]).as_poly(var) for coeff, mono in zip(M.coeffs(), M.monoms())]
             for j, term in enumerate(terms):
                 pow = term.monoms()[0][0] # power of var in term
                 terms[j] = updates[var].update_term(term, pow).as_poly(rvars)

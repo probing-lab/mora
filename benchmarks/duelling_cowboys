@@ -1,7 +1,0 @@
-
-ahit = 0
-bhit = 0
-while true:
-    ahit = 1 @ a; 0
-    bhit = -a + 1 @ b; 0
-    y = -ahit - bhit @ 1

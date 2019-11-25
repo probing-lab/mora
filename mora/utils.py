@@ -7,9 +7,10 @@ import re
 class Update:
     # parse updates
     # takes string "x = P @ p; Q @ q" or x = RV(d, a, b)
-    # creates class to deal with substituing powers of variables and moments
+    # creates class to deal with substituting powers of variables and moments
     def __init__(self, var, update_string, is_random_var=False, random_var=None):
         self.is_random_var = is_random_var
+        self.update_string = update_string
         self.random_var = random_var
         self.var = var
 

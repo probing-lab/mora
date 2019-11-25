@@ -13,14 +13,17 @@ initialization: VARIABLE "=" EXPRESSION
 
 loop: loop_head loop_body
 loop_head: "while " loop_condition ":" "\n"
-loop_condition: "true"
+loop_condition: trivial_condition | geq_condition | leq_condition
+trivial_condition: "true"
+geq_condition: EXPRESSION ">=" EXPRESSION
+leq_condition: EXPRESSION "<=" EXPRESSION
 loop_body: updates
 
 updates: (update "\n")* update
 update: _INDENT VARIABLE "=" EXPRESSION
 
 VARIABLE: CNAME
-EXPRESSION: /[^":\n]+/
+EXPRESSION: /[^":><=\n]+/
 
 NAME: ("a".."z")+
 _INDENT: (" ")+

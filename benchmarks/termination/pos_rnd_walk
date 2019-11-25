@@ -1,0 +1,7 @@
+
+# Positive random walk
+x = 0
+n = 0
+while x <= d:
+    n = n + 1
+    x = x + n @ 1/2; x

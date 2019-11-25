@@ -10,7 +10,8 @@ from .core import Program
 import os
 from lark import Lark, Visitor
 
-GRAMMAR_FILE_PATH = "mora/prob_solvable.lark"
+GRAMMAR_FILE_PATH: str = "mora/prob_solvable.lark"
+LOOP_CONDITION_VAR: str = "loop_condition"
 
 
 class InputParser:
@@ -33,6 +34,8 @@ class InputParser:
         visitor = UpdateProgramVisitor(self.__program)
         visitor.visit(tree)
         self.__set_unknown_initializations()
+        if self.__program.loop_condition:
+            self.__handle_loop_condition()
 
         return self.__program
 
@@ -40,6 +43,20 @@ class InputParser:
         for v in self.__program.variables:
             if v not in self.__program.initial_values.keys():
                 self.__program.initial_values[v] = Update(v, "RV(unknown)")
+
+    # This function adds an update assignment as well as an initialization for the loop-condition.
+    # such that the main algorithm can be used to compute the expected value of the loop-condition.
+    def __handle_loop_condition(self):
+        variable = symbols(LOOP_CONDITION_VAR)
+        expression = self.__program.loop_condition
+        self.__program.variables.append(variable)
+        self.__program.updates[variable] = Update(variable, expression)
+        for v, u in self.__program.initial_values.items():
+            # Replacing the variables in the loop-condition with their expected values for the initialization
+            # is just possible because we are only interested in the first moment of the loop-condition
+            r = u.update_string if u.random_var is None else str(u.random_var.compute_moment(1))
+            expression = expression.replace(str(v), r)
+        self.__program.initial_values[variable] = Update(variable, expression)
 
 
 class UpdateProgramVisitor(Visitor):
@@ -62,3 +79,9 @@ class UpdateProgramVisitor(Visitor):
         self.forbidden_variables.union(
             self.program.updates[variable].update_term(variable, 1).free_symbols
         ).difference(self.program.variables)
+
+    def geq_condition(self, tree):
+        self.program.loop_condition = f"({tree.children[0]}) - ({tree.children[1]})"
+
+    def leq_condition(self, tree):
+        self.program.loop_condition = f"({tree.children[1]}) - ({tree.children[0]})"
