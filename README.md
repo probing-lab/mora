@@ -83,6 +83,7 @@ However, `x = x + y` followed by `y = y + 1`, or `x = x^2` is not allowed.
 An example program would be:
 
 ```
+# this is a comment
 x=0
 while true:
     u = RV(uniform, 0, b)

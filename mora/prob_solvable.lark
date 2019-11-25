@@ -24,7 +24,8 @@ EXPRESSION: /[^":\n]+/
 
 NAME: ("a".."z")+
 _INDENT: (" ")+
+COMMENT: "#" /[^\n]*/ "\n"
 
 %import common.WS
 %import common.CNAME
-%ignore WS
+%ignore WS | COMMENT
