@@ -1,5 +1,6 @@
-from diofant import ( symbols, prod, Function, simplify, sympify, rsolve )
-from mora.utils import *
+from diofant import symbols, Function, simplify, rsolve
+from .utils import *
+
 
 def solve_recurrences(recs, rvars, init={}):
     ''' for example, init = {x: Update(whatever), y: Update(whateverer)}'''

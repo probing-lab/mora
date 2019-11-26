@@ -1,0 +1,31 @@
+//
+// EBNF grammar for the language of prob-solvable loops
+// The grammar doesn't not model whether or not the the individual updates are of correct form
+// (i.e. polynomial updates)
+//
+
+start: prob_solvable
+
+prob_solvable: initializations loop
+
+initializations: (initialization "\n")*
+initialization: VARIABLE "=" EXPRESSION
+
+loop: loop_head loop_body
+loop_head: "while " loop_condition ":" "\n"
+loop_condition: "true"
+loop_body: updates
+
+updates: (update "\n")* update
+update: _INDENT VARIABLE "=" EXPRESSION
+
+VARIABLE: CNAME
+EXPRESSION: /[^":\n]+/
+
+NAME: ("a".."z")+
+_INDENT: (" ")+
+COMMENT: "#" /[^\n]*/ "\n"
+
+%import common.WS
+%import common.CNAME
+%ignore WS | COMMENT

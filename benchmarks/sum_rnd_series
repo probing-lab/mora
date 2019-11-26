@@ -4,4 +4,3 @@ x = 0
 while true:
     n = n + 1 @ 1
     x = x + n @ 1/2; x @ 1/2
-
