@@ -1,4 +1,6 @@
 
+# The program is non-terminating (independently of parameter d)
+
 x = 0
 y = 0
 while x >= 0:

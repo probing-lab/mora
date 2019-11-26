@@ -1,7 +1,19 @@
 
 # Duelling cowboys
+#
+# turn := 0;
+# continue := 1;
+# while (continue >= 1) {
+#  if (turn = 0) {
+#     (continue := 0 [ a ] turn := 1);
+#   } else {
+#    (continue := 0 [ b ] turn := 0);
+#  }
+# }
+#
+
 a_win = 0
 b_win = 0
 while a_win + b_win <= 0:
-    a_win = 1 @ a; 0
-    b_win = -a_win + 1 @ b; 0
+    a_win = 1         @ a; 0
+    b_win = 1 - a_win @ b; 0

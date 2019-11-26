@@ -1,5 +1,6 @@
 
 # Positive random walk
+# The program has a
 x = 0
 n = 0
 while x <= d:

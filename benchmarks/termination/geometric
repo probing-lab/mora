@@ -1,0 +1,8 @@
+
+# Models a geometric distribution
+
+x = 0
+stop = 0
+while stop <= 0:
+    x = x + 1
+    stop = 1 @ p; 0

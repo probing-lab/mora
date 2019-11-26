@@ -1,0 +1,8 @@
+
+# The program is PAST (independently from the parameter d)
+
+x = 0
+y = 0
+while x <= d:
+    y = y + 1
+    x = x + 5*y**2 @ 2/3; x - 3*y**3

@@ -1,0 +1,7 @@
+
+# This program does not terminate
+# as the drift tends to positive infinity
+
+x = 1
+while x >= 1:
+    x = 2*x @ 1/2; (1/2)*x
