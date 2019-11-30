@@ -32,9 +32,13 @@ source .venv/bin/activate
 5. Install the required dependencies with pip:
 ```shell script
 pip install scipy
-pip install diofant
+pip install -e git+git@github.com:mmsbrggr/diofant.git#egg=diofant
 pip install lark-parser
 ```
+
+Note: Use the the custom fork for the `diofant` until the version 0.11 is released.
+The reason for that is [this issue in diofant 0.10](https://github.com/diofant/diofant/issues/922).
+The custom fork contains a quick fix for this problem.
 
 # Run Mora
 

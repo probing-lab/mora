@@ -73,4 +73,7 @@ def EV(expression):
 
 
 def get_exponent_of(var, mono):
-    return mono.as_poly([var]).monoms()[0][0]
+    monoms = mono.as_poly([var]).monoms()
+    if len(monoms) > 0 and len(monoms[0]) > 0:
+        return monoms[0][0]
+    return 0
