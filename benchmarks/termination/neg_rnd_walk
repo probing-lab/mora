@@ -1,8 +1,0 @@
-
-# Negative random walk
-# The program has a non-zero probability of not terminating
-x = 0
-n = 0
-while x <= d:
-    n = n + 1
-    x = x - n @ 1/2; x + 1
