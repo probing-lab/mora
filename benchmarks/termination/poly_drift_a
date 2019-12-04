@@ -3,6 +3,6 @@
 
 x = 0
 y = 0
-while x <= d:
+while x < d:
     y = y + 1
     x = x + 2*y**2 @ p; x - 2*y**3

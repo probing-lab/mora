@@ -21,7 +21,7 @@ trail_a = 0
 trail_b = 0
 trail_c = 0
 trail_d = 0
-while trail_a + trail_b + trail_c + trail_d <= 0:
+while trail_a + trail_b + trail_c + trail_d < 1:
     trail_a = 1                                 @ a; 0
     trail_b = 1 - trail_a                       @ b; 0
     trail_c = 1 - (trail_a + trail_b)           @ c; 0
