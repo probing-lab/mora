@@ -10,9 +10,6 @@ def get_expected_loop_guard_change(expected_loop_guard: Expr):
     shifted_expectation = expected_loop_guard.subs({n: n - 1})
     expected_delta = simplify(expected_loop_guard - shifted_expectation)
 
-    if expected_delta.is_polynomial():
-        expected_delta = expected_delta.as_poly()
-
     return expected_delta
 
 
