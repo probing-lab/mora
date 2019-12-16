@@ -8,7 +8,7 @@ class Program:
     def __init__(self):
         self.name: str = ""
         self.source: str = ""
-        self.loop_condition: str = ""
+        self.loop_guard: str = ""
         self.variables: List[Symbol] = []
         self.initial_values: Dict[Symbol, Update] = {}
         self.updates: Dict[Symbol, Update] = {}

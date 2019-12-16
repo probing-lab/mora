@@ -12,11 +12,11 @@ initializations: (initialization "\n")*
 initialization: VARIABLE "=" EXPRESSION
 
 loop: loop_head loop_body
-loop_head: "while " loop_condition ":" "\n"
-loop_condition: trivial_condition | geq_condition | leq_condition
-trivial_condition: "true"
-geq_condition: EXPRESSION ">" EXPRESSION
-leq_condition: EXPRESSION "<" EXPRESSION
+loop_head: "while " loop_guard ":" "\n"
+loop_guard: trivial_guard | ge_guard | le_guard
+trivial_guard: "true"
+ge_guard: EXPRESSION ">" EXPRESSION
+le_guard: EXPRESSION "<" EXPRESSION
 loop_body: updates
 
 updates: (update "\n")* update

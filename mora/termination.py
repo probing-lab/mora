@@ -1,14 +1,14 @@
 from diofant import *
 
 
-def get_expected_loop_condition_change(expected_loop_condition: Expr):
-    n = get_n(expected_loop_condition)
+def get_expected_loop_guard_change(expected_loop_guard: Expr):
+    n = get_n(expected_loop_guard)
     if n is None:
         return Integer(0)
 
-    expected_loop_condition = expected_loop_condition
-    shifted_expectation = expected_loop_condition.subs({n: n-1})
-    expected_delta = simplify(expected_loop_condition - shifted_expectation)
+    expected_loop_guard = expected_loop_guard
+    shifted_expectation = expected_loop_guard.subs({n: n - 1})
+    expected_delta = simplify(expected_loop_guard - shifted_expectation)
 
     if expected_delta.is_polynomial():
         expected_delta = expected_delta.as_poly()

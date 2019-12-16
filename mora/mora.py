@@ -3,10 +3,10 @@
 This is the main function calling the parser, the solver and then output the results
 """
 
-from .input import InputParser, LOOP_CONDITION_VAR
+from .input import InputParser, LOOP_GUARD_VAR
 from .output import output_results
 from .core import core
-from .termination import get_expected_loop_condition_change
+from .termination import get_expected_loop_guard_change
 from timeit import default_timer as timer
 
 
@@ -19,9 +19,9 @@ def mora(source: str, goal: int = 1, output_format: str = ""):
         invariants = core(program, goal)
         time = timer() - start
 
-        if program.loop_condition:
-            expected_delta = get_expected_loop_condition_change(invariants[LOOP_CONDITION_VAR + "^1"])
-            invariants['loop_delta^1'] = expected_delta
+        if program.loop_guard:
+            change = get_expected_loop_guard_change(invariants[LOOP_GUARD_VAR + "^1"])
+            invariants['loop_guard_change^1'] = change
 
         output_results(program, invariants, time, output_format)
 
