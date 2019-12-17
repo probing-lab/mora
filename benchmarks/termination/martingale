@@ -1,0 +1,7 @@
+
+
+stake = 0
+bet = 1
+while stake < 1:
+    bet = 2*bet
+    stake = stake + bet @ 1/2; stake - bet
