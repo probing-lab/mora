@@ -27,7 +27,7 @@ def mora(source: str, goal: int = 1, output_format: str = ""):
         output_results(program, invariants, time, output_format)
 
         if program.loop_guard:
-            p1 = plot(invariants[LOOP_GUARD_VAR + "^1"], show=False, xlim=(0, None))
+            p1 = plot(invariants[LOOP_GUARD_VAR + "_change^1"], show=False, xlim=(0, None))
             #p2 = plot(invariants[LOOP_GUARD_VAR + "_change^1"], show=False)
             #p1.append(p2[0])
             p1.show()
