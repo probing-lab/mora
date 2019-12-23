@@ -7,8 +7,8 @@ def get_expected_loop_guard_change(expected_loop_guard: Expr):
         return Integer(0)
 
     expected_loop_guard = expected_loop_guard
-    shifted_expectation = expected_loop_guard.subs({n: n - 1})
-    expected_delta = simplify(expected_loop_guard - shifted_expectation)
+    shifted_expectation = expected_loop_guard.subs({n: n + 1})
+    expected_delta = simplify(shifted_expectation - expected_loop_guard)
 
     return expected_delta
 
