@@ -1,0 +1,7 @@
+# Models a logical and as the loop guard (x > 0 and y > 0)
+# The program is PAST for initial sates where x0 or y0 is positive
+
+while x*y > 0:
+    d = 1 @ 1/2; 0
+    x = x - d
+    y = y - (1 - d)

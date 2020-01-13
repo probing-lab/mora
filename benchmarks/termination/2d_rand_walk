@@ -1,3 +1,6 @@
+# 2d random walk
+# The program is AST (and not PAST)
+
 left = 0
 right = 0
 top = 0

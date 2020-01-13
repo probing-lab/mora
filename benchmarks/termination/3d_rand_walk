@@ -1,3 +1,6 @@
+# 3d random walk
+# The program is non-terminating
+
 left = 0
 right = 0
 top = 0

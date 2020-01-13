@@ -1,0 +1,8 @@
+# A program with polynomial behaviour
+# The program is PAST
+
+x = 0
+y = 0
+while x + y < 100:
+    x = x + 1
+    y = y + x**2 - 5*x + 10 @ 1/2; y - x

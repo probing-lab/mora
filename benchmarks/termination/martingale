@@ -1,7 +1,12 @@
 
+# The following example describes the betting strategy of a gambler who always doubles her bet after loosing until winning once.
+# This gambling strategy is called martingale.
+# This is where the term originated.
+#
+# The program is AST (and not PAST)
 
-stake = 0
+winnings = 0
 bet = 1
-while stake < 1:
+while winnings < 1:
     bet = 2*bet
-    stake = stake + bet @ 1/2; stake - bet
+    winnings = winnings + bet @ 1/2; winnings - bet
