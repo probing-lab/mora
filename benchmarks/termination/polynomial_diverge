@@ -1,0 +1,7 @@
+# A non-terminating program with polynomial behavior
+
+x = 10
+y = 0
+while x > 0:
+    x = x + y**2 @ 2/3; x - y**2
+    y = y + 1
