@@ -1,0 +1,10 @@
+# This is an example where the drift tends to negative infinity.
+# However x is definitely not a supermartingale let alone a ranking one
+# In essence There is a positive probability for y to take any negative value
+# For x to be a supermartingale y would however have >= -1/2.
+
+x = 10
+y = 0
+while x > 0:
+    y = y + 2 @ 1/2; y - 1
+    x = x - y
