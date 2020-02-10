@@ -1,6 +1,7 @@
 
 from datetime import datetime
 from diofant import latex
+from .utils import log
 
 
 def output_results(prog, invariants, computation_time, output_format=" "):
@@ -23,8 +24,8 @@ def output_results(prog, invariants, computation_time, output_format=" "):
                     f.write(f"\nE[{k}] = {invariants[k]}")
             f.write(f"\n\nComputation time {computation_time}s.")
             f.write("\n\n")
-    print(f"\nMoment based invariants for program {program_name}, with invariants over [{', '.join([str(g) for g in goal])}]:")
+    log(f"\nMoment based invariants for program {program_name}, with invariants over [{', '.join([str(g) for g in goal])}]:")
     for k in invariants:
         if k:
-            print(" E[{}] = {}".format(k, invariants[k]))
-    print("Computation time {}s.".format(computation_time))
+            log(" E[{}] = {}".format(k, invariants[k]))
+    log("Computation time {}s.".format(computation_time))

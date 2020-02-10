@@ -1,7 +1,9 @@
-from diofant import sympify, Rational
+from diofant import sympify, Rational, Integer, Expr, simplify
 from scipy.stats import norm
 from math import sqrt
 import re
+
+LOG = True
 
 
 class Update:
@@ -77,3 +79,26 @@ def get_exponent_of(var, mono):
     if len(monoms) > 0 and len(monoms[0]) > 0:
         return monoms[0][0]
     return 0
+
+
+def get_expected_change(expected_var: Expr):
+    n = get_n(expected_var)
+    if n is None:
+        return Integer(0)
+
+    shifted_expectation = expected_var.subs({n: n + 1})
+    expected_change = simplify(shifted_expectation - expected_var)
+
+    return expected_change
+
+
+def get_n(expression: Expr):
+    for s in expression.free_symbols:
+        if str(s) is "n":
+            return s
+    return None
+
+
+def log(*argv):
+    if LOG:
+        print(*argv)

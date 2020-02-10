@@ -37,20 +37,19 @@ def solve_recurrences(recs, rvars, init={}):
         if lhs in solutions:
             return solutions[lhs]
 
-        print(' Solving for ' + lhs, ' with initial condition {}'.format(str(fs[lhs](0)) + " = " + str(initial_vals[lhs])))
+        log(' Solving for ' + lhs, ' with initial condition {}'.format(str(fs[lhs](0)) + " = " + str(initial_vals[lhs])))
 
         if lhs in [evar for _, evar in evar_recs[lhs]]: # recurrence
             eqn = fs[lhs](n) - sum( coeff * (solve(evar).subs({n: n-1}) if evar != lhs else fs[lhs](n-1)) for coeff, evar in evar_recs[lhs])
-            #print('   equation', eqn)
             res = rsolve(eqn, fs[lhs](n), init={fs[lhs](0): initial_vals[lhs]})
 
         else: # non recurrence
             res = sum( coeff * solve(evar).subs({n: n-1}) for coeff, evar in evar_recs[lhs])
         solutions[lhs] = simplify(res)
-        print('   ', lhs + '(n)', '   -> ', res)
+        log('   ', lhs + '(n)', '   -> ', res)
         return res
 
     for lhs in evar_recs.keys():
-        print(' Solution found\n  ', lhs, ' = ', solve(lhs))
+        log(' Solution found\n  ', lhs, ' = ', solve(lhs))
 
     return solutions

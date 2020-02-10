@@ -1,5 +1,5 @@
 from diofant import prod, Symbol
-from mora.utils import Update
+from mora.utils import Update, log
 from .solver import solve_recurrences
 from typing import List, Dict
 
@@ -44,16 +44,16 @@ def core(program: Program, goal: int = 1):
             if N not in MBRecs and N != 1:
                 S.add(N)
 
-    print(' --- MBRecs --- ')
+    log(' --- MBRecs --- ')
     for k, v in MBRecs.items():
-        print(' '*3, k, ' = ', v.as_expr())
-    print()
+        log(' '*3, k, ' = ', v.as_expr())
+    log()
 
     return solve_recurrences(MBRecs, rvars, init=initial)
 
 
 def set_goal(goal, vars):
-    print("setting goal: ", goal)
+    log("setting goal: ", goal)
     goal = int(goal)
     S = {x**goal for x in vars}
     return S
