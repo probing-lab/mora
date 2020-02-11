@@ -23,7 +23,10 @@ def mora(source: str, goal: int = 1, output_format: str = ""):
             loop_guard_change = get_expected_change(invariants[LOOP_GUARD_VAR + "^1"])
             invariants[LOOP_GUARD_VAR + '_change^1'] = loop_guard_change
 
-        output_results(program, invariants, time, output_format)
+        program.moments = invariants
+        output_results(program, time, output_format)
+
+        return program
 
     except Exception as exception:
         print("Execution failed!")

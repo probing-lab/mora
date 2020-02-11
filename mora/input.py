@@ -63,6 +63,7 @@ class UpdateProgramVisitor(Visitor):
     def __init__(self, program: Program):
         self.program = program
         self.forbidden_variables = set()
+        self.probabilistic_variables = set()
 
     def initialization(self, tree):
         variable = symbols(str(tree.children[0]))
@@ -75,9 +76,17 @@ class UpdateProgramVisitor(Visitor):
             raise Exception("Program is not prob-solvable. Circular variable dependencies.")
         expression = str(tree.children[1])
         self.program.variables.append(variable)
-        self.program.updates[variable] = Update(variable, expression)
+        update = Update(variable, expression)
+        self.program.updates[variable] = update
+
+        contains_prob_variables = update.update_term(variable, 1).free_symbols & self.probabilistic_variables
+        if len(update.branches) == 1 and not contains_prob_variables:
+            update.is_probabilistic = False
+        else:
+            self.probabilistic_variables.add(variable)
+
         self.forbidden_variables.union(
-            self.program.updates[variable].update_term(variable, 1).free_symbols
+            update.update_term(variable, 1).free_symbols
         ).difference(self.program.variables)
 
     def ge_guard(self, tree):

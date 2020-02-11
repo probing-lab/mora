@@ -3,7 +3,7 @@ from scipy.stats import norm
 from math import sqrt
 import re
 
-LOG = True
+LOG = False
 
 
 class Update:
@@ -15,6 +15,7 @@ class Update:
         self.update_string = update_string
         self.random_var = random_var
         self.var = var
+        self.is_probabilistic = True
 
         # check if this is a RV or expression update
         rv = re.search(r"RV\((?P<params>.+)\)", update_string)

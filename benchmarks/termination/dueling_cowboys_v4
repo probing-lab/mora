@@ -17,5 +17,5 @@
 a_win = 0
 b_win = 0
 while a_win + b_win < 1:
-    a_win = a_win + 1 @ a; a_win + 0
-    b_win = b_win + 1 - a_win @ b; b_win + 0
+    a_win = a_win + 1 @ 1/2; a_win + 0
+    b_win = b_win + 1 - a_win @ 1/2; b_win + 0

@@ -1,4 +1,4 @@
-from diofant import prod, Symbol
+from diofant import prod, Symbol, Poly, Expr
 from mora.utils import Update, log
 from .solver import solve_recurrences
 from typing import List, Dict
@@ -13,6 +13,8 @@ class Program:
         self.initial_values: Dict[Symbol, Update] = {}
         self.updates: Dict[Symbol, Update] = {}
         self.goals: List[int] = []
+        self.recurrences: Dict[Symbol, Poly]
+        self.moments: Dict[str, Expr]
 
 
 def core(program: Program, goal: int = 1):
@@ -48,6 +50,9 @@ def core(program: Program, goal: int = 1):
     for k, v in MBRecs.items():
         log(' '*3, k, ' = ', v.as_expr())
     log()
+
+    # set recurrences on program object for later usage
+    program.recurrences = MBRecs
 
     return solve_recurrences(MBRecs, rvars, init=initial)
 

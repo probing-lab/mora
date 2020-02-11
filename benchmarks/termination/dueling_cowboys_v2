@@ -18,6 +18,6 @@ a_win = 0
 b_win = 0
 c = 1
 while c > 0:
-    a_win = 1         @ a; 0
-    b_win = 1 - a_win @ b; 0
+    a_win = 1         @ 1/2; 0
+    b_win = 1 - a_win @ 1/2; 0
     c = c - a_win - b_win
