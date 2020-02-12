@@ -5,7 +5,8 @@ to get something about its termination behavior. Then the proof-rule gets applie
 
 from mora.core import Program
 from mora.input import LOOP_GUARD_VAR
-from diofant import Expr, Symbol, sympify, simplify, limit, symbols, oo, solve, diff
+from diofant import Expr, Symbol, sympify, simplify, limit, symbols, oo, solve
+from termination.expression import get_expression_pre_loop_body
 import math
 
 LOOP_GUARD_CHANGE = 'loop_guard_change^1'
@@ -15,14 +16,18 @@ def decide_termination(program: Program):
     """
     The main function, gathering all the information, deciding on and calling a proof-rule
     """
-
     loop_guard_change, n = prepare_loop_guard_change(program)
     lim = limit(loop_guard_change, n, oo)
     martingale_expression = create_martingale_expression(program, lim)
     n0 = prepare_n0(loop_guard_change, n)
 
-    print(martingale_expression)
-    print(n0)
+    pre_expressions = get_expression_pre_loop_body(sympify(program.loop_guard), program)
+    pre_expressions = [(simplify(e - sympify(program.loop_guard)), p) for e, p in pre_expressions]
+    pre_expressions = [(str(a), str(b)) for a, b in pre_expressions]
+
+    print("Pre expressions: ", pre_expressions)
+    print("Martingale expression: ", martingale_expression)
+    print("n0: ", n0)
 
     # -guard cannot be a supermartingale. Therefore try proving PAST/AST
     if lim < 0:
@@ -43,9 +48,8 @@ def prepare_n0(loop_guard_change: Expr, n: Symbol):
     Takes the loop-guard change and returns the minimum number n0 such that for all n < n0, the loop-guard cannot
     be a supermartingale. So the supermartingale condition, needs only be checked after n0.
     """
-    diff_loop_guard_change = diff(loop_guard_change, n)
     try:
-        zeros = solve(loop_guard_change, n) + solve(diff_loop_guard_change, n)
+        zeros = solve(loop_guard_change, n)
     except NotImplementedError:
         zeros = []
 
