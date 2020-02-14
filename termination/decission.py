@@ -6,8 +6,10 @@ to get something about its termination behavior. Then the proof-rule gets applie
 from mora.core import Program
 from mora.input import LOOP_GUARD_VAR
 from diofant import Expr, Symbol, sympify, simplify, limit, symbols, oo, solve
-from termination.expression import get_expression_pre_loop_body
+from .expression import get_expression_pre_loop_body
+from .invariance import is_invariant
 import math
+
 
 LOOP_GUARD_CHANGE = 'loop_guard_change^1'
 
@@ -23,7 +25,6 @@ def decide_termination(program: Program):
 
     pre_expressions = get_expression_pre_loop_body(sympify(program.loop_guard), program)
     pre_expressions = [(simplify(e - sympify(program.loop_guard)), p) for e, p in pre_expressions]
-    pre_expressions = [(str(a), str(b)) for a, b in pre_expressions]
 
     print("Pre expressions: ", pre_expressions)
     print("Martingale expression: ", martingale_expression)
@@ -32,15 +33,21 @@ def decide_termination(program: Program):
     # -guard cannot be a supermartingale. Therefore try proving PAST/AST
     if lim < 0:
         print("limit < 0")
+        if is_invariant(martingale_expression, program, n0):
+            print("Huston, we have PAST!")
 
     # guard cannot be a supermartingale. Therefore try proving non-termination
     elif lim > 0:
-        print("limit > 0")
+        if is_invariant(martingale_expression, program, n0):
+            print("Huston, we have non-termination (maybe, not everything checked)!")
 
     # Neither guard nor -guard can be ranking, but guard can be a martingale.
     # Therefore try proving AST
     else:
         print("limit = 0")
+        for e, p in pre_expressions:
+            if is_invariant(e, program, n0):
+                print("Huston, we have AST!")
 
 
 def prepare_n0(loop_guard_change: Expr, n: Symbol):
