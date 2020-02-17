@@ -1,0 +1,6 @@
+# A minimal example of a program which is PAST and the guard is a ranking supermartingale
+# but the drift as computed by Mora tends to positive infinity
+
+x = 100
+while x**2 > 0:
+    x = x - 1 @ 1/2; x - 2
