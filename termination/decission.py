@@ -5,11 +5,11 @@ to get something about its termination behavior. Then the proof-rule gets applie
 
 from mora.core import Program
 from mora.input import LOOP_GUARD_VAR
-from diofant import Expr, Symbol, sympify, simplify, limit, symbols, oo, solve
-from .expression import get_expression_pre_loop_body
-from .invariance import is_invariant
-import math
-
+from diofant import Expr, sympify, simplify, symbols
+from .martingale_rule import MartingaleRule
+from .ranking_sm_rule import RankingSMRule
+from .repulsing_sm_rule import RepulsingSMRule
+from .rule import Result
 
 LOOP_GUARD_CHANGE = 'loop_guard_change^1'
 
@@ -18,53 +18,33 @@ def decide_termination(program: Program):
     """
     The main function, gathering all the information, deciding on and calling a proof-rule
     """
-    loop_guard_change, n = prepare_loop_guard_change(program)
-    lim = limit(loop_guard_change, n, oo)
-    martingale_expression = create_martingale_expression(program, lim)
-    n0 = prepare_n0(loop_guard_change, n)
+    lgc = prepare_loop_guard_change(program)
+    me_pos = create_martingale_expression(program, False)
+    me_neg = create_martingale_expression(program, True)
+    rules = [
+        RankingSMRule(lgc, me_pos, program),
+        MartingaleRule(lgc, me_pos, program),
+        RepulsingSMRule(lgc, me_neg, program)
+    ]
 
-    pre_expressions = get_expression_pre_loop_body(sympify(program.loop_guard), program)
-    pre_expressions = [(simplify(e - sympify(program.loop_guard)), p) for e, p in pre_expressions]
+    result = Result.UNKNOWN
+    for rule in rules:
+        if rule.is_applicable():
+            result = rule.run()
+            if result is not Result.UNKNOWN:
+                break
 
-    print("Pre expressions: ", pre_expressions)
-    print("Martingale expression: ", martingale_expression)
-    print("n0: ", n0)
+    outputs = {
+        Result.UNKNOWN: 'unknown',
+        Result.AST: 'AST',
+        Result.PAST: 'PAST',
+        Result.NONTERM: 'non-terminating',
+    }
 
-    # -guard cannot be a supermartingale. Therefore try proving PAST/AST
-    if lim < 0:
-        print("limit < 0")
-        if is_invariant(martingale_expression, program, n0):
-            print("Huston, we have PAST!")
-
-    # guard cannot be a supermartingale. Therefore try proving non-termination
-    elif lim > 0:
-        if is_invariant(martingale_expression, program, n0):
-            print("Huston, we have non-termination (maybe, not everything checked)!")
-
-    # Neither guard nor -guard can be ranking, but guard can be a martingale.
-    # Therefore try proving AST
-    else:
-        print("limit = 0")
-        for e, p in pre_expressions:
-            if is_invariant(e, program, n0):
-                print("Huston, we have AST!")
+    print(outputs[result])
 
 
-def prepare_n0(loop_guard_change: Expr, n: Symbol):
-    """
-    Takes the loop-guard change and returns the minimum number n0 such that for all n < n0, the loop-guard cannot
-    be a supermartingale. So the supermartingale condition, needs only be checked after n0.
-    """
-    try:
-        zeros = solve(loop_guard_change, n)
-    except NotImplementedError:
-        zeros = []
-
-    zeros = [math.ceil(float(z[n])) for z in zeros] + [0]
-    return max(zeros)
-
-
-def create_martingale_expression(program: Program, lim: Expr):
+def create_martingale_expression(program: Program, invert: bool):
     """
     Creates the martingale expression E(M_{i+1} - M_i | F_i). Also deterministic variables get substituted
     with their representation in n.
@@ -72,7 +52,7 @@ def create_martingale_expression(program: Program, lim: Expr):
     expected_guard = program.recurrences[symbols(LOOP_GUARD_VAR)]
     expression = simplify(expected_guard - sympify(program.loop_guard))
 
-    if lim > 0:
+    if invert:
         expression *= -1
 
     expression = simplify(expression)
@@ -89,7 +69,7 @@ def prepare_loop_guard_change(program: Program):
     n = symbols('n', real=True)
     loop_guard_change = loop_guard_change.subs({n_int: n})
 
-    return loop_guard_change, n
+    return loop_guard_change
 
 
 def substitute_deterministic_variables(expr: Expr, program: Program):

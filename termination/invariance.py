@@ -1,34 +1,56 @@
-from diofant import Expr, sympify, symbols, reduce_inequalities
+"""
+This module contains functions deciding whether or not a given expression is an invariant of the program,
+More precisely, it decides whether expression <= 0 is eventually invariant.
+The methods are of course not complete in general.
+"""
+import math
+
+from diofant import Expr, sympify, symbols, solve, Symbol
 from mora.core import Program
 
 
-def is_invariant(expression: Expr, program: Program, n0: int):
+def is_invariant(expression: Expr, program: Program):
+    """
+    Main function deciding whether expression <= 0 is eventually invariant
+    """
     expression = strap_expression(expression)
     n = symbols('n')
-    result = solve_and_simplify([expression > 0, n > n0])
-    is_inv = not bool(result)
-    return is_inv
+    is_deterministic = len(expression.free_symbols.difference({n})) == 0
+    if is_deterministic:
+        return is_deterministic_invariant(expression)
+    else:
+        return is_probabilistic_invariant(expression, program)
+
+
+def is_deterministic_invariant(expression: Expr):
+    """
+    Checks whether an expression only containing n eventually becomes <= 0
+    """
+    n = symbols('n')
+    max_0 = get_max_0(expression, n)
+    return expression.subs({n: max_0 + 1}) <= 0
+
+
+def is_probabilistic_invariant(expression: Expr, program: Program):
+    """
+    For more complex expressions the decision whether expression <= 0 is invariant gets dispatched.
+    """
+    # TODO: dispatch to Z3
+    raise NotImplementedError()
+
+
+def get_max_0(expression: Expr, n: Symbol):
+    """
+    Returns the maximum 0 of a given expression or 0.
+    """
+    try:
+        zeros = solve(expression, n)
+    except NotImplementedError:
+        zeros = []
+    zeros = [math.ceil(float(z[n])) for z in zeros] + [0]
+    return max(zeros)
 
 
 def strap_expression(expression: Expr):
     expression = expression.args[0] if len(expression.args) > 0 else expression
     return sympify(str(expression))
-
-
-def solve_and_simplify(inequalities):
-    s = get_first_free_symbol(inequalities)
-    result = reduce_inequalities(inequalities, [s])
-    return simplify_result(result, s)
-
-
-def get_first_free_symbol(inequalities):
-    for i in inequalities:
-        if len(i.free_symbols) > 0:
-            return list(i.free_symbols)[0]
-    return None
-
-
-def simplify_result(result, symbol):
-    if bool(result) is False:
-        return result
-    return reduce_inequalities([i for i in result.args], [symbol])
