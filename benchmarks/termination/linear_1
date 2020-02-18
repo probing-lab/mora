@@ -3,6 +3,6 @@
 
 x = 0
 y = 0
-while x + y < 100:
+while y < 100:
     x = x + 1
     y = y + x @ 11/20; y - x
