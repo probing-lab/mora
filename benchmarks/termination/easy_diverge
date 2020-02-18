@@ -1,0 +1,5 @@
+# The program diverges
+
+x = 0
+while x > 0:
+    x = x + 1 @ 1/2; x
