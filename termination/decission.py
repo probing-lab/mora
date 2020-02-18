@@ -34,14 +34,27 @@ def decide_termination(program: Program):
             if result is not Result.UNKNOWN:
                 break
 
-    outputs = {
-        Result.UNKNOWN: 'unknown',
-        Result.AST: 'AST',
-        Result.PAST: 'PAST',
-        Result.NONTERM: 'non-terminating',
-    }
+    # TODO: refactor output
+    is_past = "maybe"
+    is_ast = "maybe"
+    is_non_term = "maybe"
 
-    print(outputs[result])
+    if result is Result.PAST:
+        is_past = "yes"
+        is_ast = "yes"
+        is_non_term = "no"
+    elif result is Result.AST:
+        is_past = "maybe"
+        is_ast = "yes"
+        is_non_term = "no"
+    elif result is Result.NONTERM:
+        is_past = "no"
+        is_ast = "no"
+        is_non_term = "yes"
+
+    print("PAST: ", is_past)
+    print("AST: ", is_ast)
+    print("NON-TERM: ", is_non_term)
 
 
 def create_martingale_expression(program: Program, invert: bool):
