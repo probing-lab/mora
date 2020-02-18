@@ -16,6 +16,7 @@ class RepulsingSMRule(Rule):
 
     def run(self):
         # TODO check asymptotic behavior (not sound yet)
+        # TODO check if pos probability of having next iteration
         if is_invariant(self.martingale_expression, self.program):
             return Result.NONTERM
         return Result.UNKNOWN

@@ -3,10 +3,9 @@ This module contains functions deciding whether or not a given expression is an 
 More precisely, it decides whether expression <= 0 is eventually invariant.
 The methods are of course not complete in general.
 """
-import math
-
-from diofant import Expr, sympify, symbols, solve, Symbol
+from diofant import Expr, sympify, symbols
 from mora.core import Program
+from termination.utils import get_max_0
 
 
 def is_invariant(expression: Expr, program: Program):
@@ -37,18 +36,6 @@ def is_probabilistic_invariant(expression: Expr, program: Program):
     """
     # TODO: dispatch to Z3
     raise NotImplementedError()
-
-
-def get_max_0(expression: Expr, n: Symbol):
-    """
-    Returns the maximum 0 of a given expression or 0.
-    """
-    try:
-        zeros = solve(expression, n)
-    except NotImplementedError:
-        zeros = []
-    zeros = [math.ceil(float(z[n])) for z in zeros] + [0]
-    return max(zeros)
 
 
 def strap_expression(expression: Expr):
