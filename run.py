@@ -7,9 +7,9 @@ For the command line arguments run the script with "--help".
 import glob
 from argparse import ArgumentParser
 
-from mora.input import InputParser
 from mora.mora import mora
 from termination import decide_termination
+from termination.bounds import bounds
 
 parser = ArgumentParser(description="Run MORA on probabilistic programs stored in files")
 
@@ -43,9 +43,9 @@ parser.add_argument(
 parser.add_argument(
     "--bounds",
     dest="bounds",
-    default=False,
-    action="store_true",
-    help="This is just a development flag. If set, it calculates the asymptotic bounds of the program variables"
+    type=str,
+    default="",
+    help="This is just a development flag. If set, it calculates the asymptotic bounds of the given expression"
 )
 
 parser.add_argument(
@@ -67,10 +67,7 @@ def main():
             program = mora(benchmark, goal=1, output_format=args.output_format)
             decide_termination(program)
         elif args.bounds:
-            ip = InputParser()
-            ip.set_source(benchmark)
-            program = ip.parse_source()
-            print(program)
+            bounds(benchmark, args.bounds)
         else:
             for goal in args.goals:
                 mora(benchmark, goal=goal, output_format=args.output_format)

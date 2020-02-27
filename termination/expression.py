@@ -4,7 +4,7 @@ which could be the predecessor of M_{i+1} before executing the loop body togethe
 probabilities.
 """
 
-from diofant import Expr, Symbol, simplify, Rational
+from diofant import Expr, Symbol, simplify, Rational, symbols
 from mora.core import Program
 
 # Type aliases to improve readability
@@ -12,7 +12,7 @@ Probability = Rational
 Case = (Expr, Probability)
 
 
-def get_expression_pre_loop_body(expression: Expr, program: Program):
+def get_branches_for_expression(expression: Expr, program: Program) -> [Case]:
     """
     The main funciton computing all possible M_i from M_{i+1} together with the associated probabilites
     """
@@ -22,7 +22,8 @@ def get_expression_pre_loop_body(expression: Expr, program: Program):
         result = split_expressions_on_symbol(result, symbol, program)
         result = combine_expressions(result)
 
-    return result
+    variables = set(program.variables).difference({symbols('n')})
+    return to_polynomials(result, variables)
 
 
 def split_expressions_on_symbol(expressions: [Case], symbol: Symbol, program: Program):
@@ -42,11 +43,23 @@ def split_expressions_on_symbol(expressions: [Case], symbol: Symbol, program: Pr
     return result
 
 
-def combine_expressions(expressions: [Case]):
+def combine_expressions(expressions: [Case]) -> [Case]:
     """
     In a given list of expressions with probabilities, combines equal expressions and their probabilities
     """
     tmp_map = {}
     for e, p in expressions:
         tmp_map[e] = tmp_map[e] + p if e in tmp_map else p
-    return tmp_map.items()
+    return list(tmp_map.items())
+
+
+def to_polynomials(expressions: [Case], variables) -> [Case]:
+    """
+    Converts all expressions in a list of cases to polynomials in the program variables
+    """
+    result = []
+    for e, p in expressions:
+        e = e.as_poly(variables)
+        result.append((e, p))
+
+    return result
