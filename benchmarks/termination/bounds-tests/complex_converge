@@ -1,0 +1,8 @@
+# The program does terminate almost surely
+# Provable with ranking supermartingales
+
+y = 0.01
+x = 10
+while x > 0:
+    x = x + 200*y**2 @ 1/2; x - y**3
+    y = 2*y
