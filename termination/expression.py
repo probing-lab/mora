@@ -4,7 +4,7 @@ which could be the predecessor of M_{i+1} before executing the loop body togethe
 probabilities.
 """
 
-from diofant import Expr, Symbol, simplify, Rational, symbols
+from diofant import Expr, Symbol, simplify, Rational, symbols, Number
 from mora.core import Program
 
 # Type aliases to improve readability
@@ -14,7 +14,7 @@ Case = (Expr, Probability)
 
 def get_branches_for_expression(expression: Expr, program: Program) -> [Case]:
     """
-    The main funciton computing all possible M_i from M_{i+1} together with the associated probabilites
+    The main function computing all possible M_i from M_{i+1} together with the associated probabilities
     """
     result = [(expression, 1)]
 
@@ -24,6 +24,17 @@ def get_branches_for_expression(expression: Expr, program: Program) -> [Case]:
 
     variables = set(program.variables).difference({symbols('n')})
     return to_polynomials(result, variables)
+
+
+def get_initial_value_for_expression(expression: Expr, program: Program) -> Number:
+    """
+    For a given expression returns its initial value
+    """
+    result = expression.subs({symbols('n'): 0})
+    for var, update in program.initial_values.items():
+        if hasattr(update, 'branches') and len(update.branches) > 0:
+            result = result.subs({var: update.branches[0][0]})
+    return simplify(result)
 
 
 def split_expressions_on_symbol(expressions: [Case], symbol: Symbol, program: Program):
