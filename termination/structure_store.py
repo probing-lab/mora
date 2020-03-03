@@ -25,7 +25,7 @@ from termination.expression import get_branches_for_expression, get_initial_valu
 class Structure:
     """
     The class actually representing a structure of an EVAR. It represents:
-    EVAR_i = recurrence_constant * EVAR_{i - 1} + inhom_part_{i - 1} @ probability
+    EVAR_n = recurrence_constant * EVAR_{n - 1} + inhom_part_{n - 1} @ probability
     """
     evar: Expr
     recurrence_constant: Number

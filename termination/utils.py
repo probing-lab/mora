@@ -1,6 +1,18 @@
 import math
 from diofant import *
 
+__COUNTER = 0
+
+
+def unique_symbol(s: str, **args):
+    """
+    Returns a symbol which every time has a different name
+    """
+    global __COUNTER
+    s = symbols(s + str(__COUNTER), **args)
+    __COUNTER += 1
+    return s
+
 
 def get_max_0(expression: Expr, n: Symbol):
     """
@@ -47,52 +59,12 @@ def get_polarity(expression: Expr, n: Symbol):
     return pos, neg
 
 
-def get_eventual_bound(fs: [Expr], n: Symbol, upper: bool = True) -> Expr:
-    """
-    Given a list of expressions in n, it returns a single expression which is eventually a bound on all fs.
-    Depending on the 'upper' parameter, the bound is either an eventual upper bound or eventual lower bound.
-    """
-    result = None
-    for f in fs:
-        if result is None:
-            result = f
-        else:
-            result = __get_eventual_bound(result, f, n, upper=upper)
+def get_signums_in_expression(expression: Expr):
+    if isinstance(expression, sign):
+        return [expression.args[0]]
 
-    return result
+    signums = []
+    for arg in expression.args:
+        signums += get_signums_in_expression(arg)
 
-
-def __get_eventual_bound(f1: Expr, f2: Expr, n: Symbol, upper: bool = True) -> Expr:
-    """
-    Given two expressions in n it returns a single expression which is eventually a bound on f1 and f2.
-    It does so by investigating the limits of the passed functions as well as the limit of the fraction.
-    """
-    limit_f1 = limit(f1, n, oo)
-    limit_f2 = limit(f2, n, oo)
-
-    if limit_f1 != limit_f2:
-        # both functions have different limits, so it is enough to compare the limits
-        if (upper and limit_f1 > limit_f2) or (not upper and limit_f1 < limit_f2):
-            return f1
-        else:
-            return f2
-
-    if limit_f1 == oo:
-        # if both functions go to +infinity, we have to investigate their fraction
-        if (upper and limit(f1 / f2, n, oo) > 1) or (not upper and limit(f1 / f2, n, oo) < 1):
-            return f1
-        else:
-            return f2
-
-    if limit_f1 == -oo:
-        # if both functions go to -infinity, we have to investigate their fraction
-        if (upper and limit(f1 / f2, n, oo) < 1) or (not upper and limit(f1 / f2, n, oo) > 1):
-            return f1
-        else:
-            return f2
-
-    # Here both f1 and f2 converge to the same real number
-    if upper:
-        return simplify(limit_f1 + 0.01)
-    else:
-        return simplify(limit_f1 - 0.01)
+    return signums

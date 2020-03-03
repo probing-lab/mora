@@ -1,8 +1,7 @@
-from random import random
-
 from diofant import *
 from mora.core import Program
 from termination.utils import *
+from termination.asymptotics import *
 import termination.structure_store as structure_store
 
 store = {}
@@ -82,46 +81,98 @@ def __get_bounds_of_evar(evar: Expr) -> Bounds:
 
 
 def __compute_bounds_of_evar(evar: Expr):
+    n = symbols('n')
     structures = structure_store.get_structures_of_evar(evar)
     inhom_parts_bounds = [get_bounds_of_expr(s.inhom_part) for s in structures]
     initial_value = structure_store.get_initial_value_of_evar(evar)
     maybe_pos, maybe_neg = __get_evar_polarity(inhom_parts_bounds, initial_value)
 
-    inhom_parts_bounds_lower = [b.lower for b in inhom_parts_bounds]
-    inhom_parts_bounds_upper = [b.upper for b in inhom_parts_bounds]
+    inhom_parts_bounds_lower = [b.lower.subs({n: n - 1}) for b in inhom_parts_bounds]
+    inhom_parts_bounds_upper = [b.upper.subs({n: n - 1}) for b in inhom_parts_bounds]
 
-    n = symbols('n')
     max_upper = get_eventual_bound(inhom_parts_bounds_upper, n, upper=True)
     min_lower = get_eventual_bound(inhom_parts_bounds_lower, n, upper=False)
     min_rec = min([s.recurrence_constant for s in structures])
     max_rec = max([s.recurrence_constant for s in structures])
+    starting_values = __get_starting_values(maybe_pos, maybe_neg)
 
-    bound_candidates = __compute_bound_candidates({min_rec, max_rec}, {max_upper, min_lower})
+    upper_candidates = __compute_bound_candidates({min_rec, max_rec}, {max_upper}, starting_values)
+    lower_candidates = __compute_bound_candidates({min_rec, max_rec}, {min_lower}, starting_values)
 
-    pass
+    max_upper_candidate = get_eventual_bound(upper_candidates, n, upper=True)
+    min_lower_candidate = get_eventual_bound(lower_candidates, n, upper=False)
+
+    bounds = Bounds()
+    bounds.expression = evar
+    bounds.upper = max_upper_candidate.as_expr()
+    bounds.lower = min_lower_candidate.as_expr()
+    bounds.maybe_positive = maybe_pos
+    bounds.maybe_negative = maybe_neg
+
+    store[evar] = bounds
 
 
 def __get_evar_polarity(inhom_parts_bounds: [Bounds], initial_value: Number):
-    initial_pos = not (initial_value <= 0)
-    initial_neg = not (initial_value >= 0)
+    initial_pos = sympify(initial_value) > 0
+    if initial_pos.is_Relational:
+        initial_pos = True
+    else:
+        initial_pos = bool(initial_pos)
+
+    initial_neg = sympify(initial_value) < 0
+    if initial_neg.is_Relational:
+        initial_neg = True
+    else:
+        initial_neg = bool(initial_neg)
+
     maybe_pos = initial_pos or any([b.maybe_positive for b in inhom_parts_bounds])
     maybe_neg = initial_neg or any([b.maybe_negative for b in inhom_parts_bounds])
     return maybe_pos, maybe_neg
 
 
-def __compute_bound_candidates(coefficients, inhom_parts):
+def __get_starting_values(maybe_pos, maybe_neg):
+    values = []
+    if maybe_pos:
+        values.append(unique_symbol('d', positive=True))
+    if maybe_neg:
+        values.append(unique_symbol('d', positive=True) * -1)
+    if not maybe_pos and not maybe_neg:
+        values.append(sympify(0))
+
+    return values
+
+
+def __compute_bound_candidates(coefficients, inhom_parts, starting_values):
     candidates = []
 
     for c in coefficients:
         for part in inhom_parts:
-            candidates.append(__compute_bound_candidate(c, part))
+            c0 = symbols('c0')
+            solution = __compute_bound_candidate(c, part, c0)
+            for v in starting_values:
+                new_candidates = __split_on_signums(solution.subs({c0: v}))
+                candidates += new_candidates
 
     return candidates
 
 
-def __compute_bound_candidate(c, inhom_part):
+def __compute_bound_candidate(c, inhom_part, starting_value):
     f = Function('f')
     n = symbols('n')
-    c0 = symbols('c0')
-    solution = rsolve(f(n) - c*f(n-1) - inhom_part, f(n), {f(0): c0})
+    solution = rsolve(f(n) - c*f(n-1) - inhom_part, f(n), {f(0): starting_value})
     return solution
+
+
+def __split_on_signums(expression: Expr):
+    exps = [expression]
+    n = symbols('n')
+    expression_limit = limit(expression, n, oo)
+    signums = get_signums_in_expression(expression_limit)
+    for s in signums:
+        new_exps = []
+        for exp in exps:
+            constant = unique_symbol('e', positive=True)
+            new_exps.append(exp.subs({s: constant}))
+            new_exps.append(exp.subs({s: constant * -1}))
+        exps = new_exps
+    return exps
