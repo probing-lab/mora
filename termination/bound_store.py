@@ -85,7 +85,7 @@ def __compute_bounds_of_evar(evar: Expr):
     structures = structure_store.get_structures_of_evar(evar)
     inhom_parts_bounds = [get_bounds_of_expr(s.inhom_part) for s in structures]
     initial_value = structure_store.get_initial_value_of_evar(evar)
-    maybe_pos, maybe_neg = __get_evar_polarity(inhom_parts_bounds, initial_value)
+    maybe_pos, maybe_neg = __get_evar_polarity(evar, inhom_parts_bounds, initial_value)
 
     inhom_parts_bounds_lower = [b.lower.subs({n: n - 1}) for b in inhom_parts_bounds]
     inhom_parts_bounds_upper = [b.upper.subs({n: n - 1}) for b in inhom_parts_bounds]
@@ -112,7 +112,12 @@ def __compute_bounds_of_evar(evar: Expr):
     store[evar] = bounds
 
 
-def __get_evar_polarity(inhom_parts_bounds: [Bounds], initial_value: Number):
+def __get_evar_polarity(evar: Expr, inhom_parts_bounds: [Bounds], initial_value: Number):
+    powers = get_all_evar_powers(evar)
+    all_powers_even = all([p % 2 == 0 for p in powers])
+    if all_powers_even:
+        return True, False
+
     initial_pos = sympify(initial_value) > 0
     if initial_pos.is_Relational:
         initial_pos = True

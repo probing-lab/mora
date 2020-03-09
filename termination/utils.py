@@ -59,7 +59,11 @@ def get_polarity(expression: Expr, n: Symbol):
     return pos, neg
 
 
-def get_signums_in_expression(expression: Expr):
+def get_signums_in_expression(expression: Expr) -> [Expr]:
+    """
+    Given an expression it returns all expressions which occur within the signum function.
+    E.g for sign(x+2)*sign(y**3) it returns [x+1, y**3]
+    """
     if isinstance(expression, sign):
         return [expression.args[0]]
 
@@ -68,3 +72,11 @@ def get_signums_in_expression(expression: Expr):
         signums += get_signums_in_expression(arg)
 
     return signums
+
+
+def get_all_evar_powers(evar: Expr) -> [Number]:
+    """
+    Returns the degrees of all variables in a given evar in a list
+    """
+    evar = evar.as_poly(evar.free_symbols)
+    return list(evar.degree_list())
