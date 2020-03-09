@@ -35,8 +35,8 @@ def get_bounds_of_expr(expression: Expr) -> Bounds:
         evar_bounds = __get_bounds_of_evar(evar)
         __replace_evar_in_expr_bounds(evar, evar_bounds, expression, expr_bounds)
 
-    expr_bounds.upper = expr_bounds.upper.as_expr()
-    expr_bounds.lower = expr_bounds.lower.as_expr()
+    expr_bounds.upper = simplify_asymptotically(expr_bounds.upper.as_expr(), symbols('n'))
+    expr_bounds.lower = simplify_asymptotically(expr_bounds.lower.as_expr(), symbols('n'))
     return expr_bounds
 
 
@@ -164,7 +164,9 @@ def __compute_bound_candidates(coefficients, inhom_parts, starting_values):
 def __compute_bound_candidate(c, inhom_part, starting_value):
     f = Function('f')
     n = symbols('n')
+    print("Solving recurrence: ", f(n) - c*f(n-1) - inhom_part)
     solution = rsolve(f(n) - c*f(n-1) - inhom_part, f(n), {f(0): starting_value})
+    print("Found solution!")
     return solution
 
 
