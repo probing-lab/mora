@@ -10,7 +10,7 @@ from termination.rule import Rule, Result
 class RepulsingSMRule(Rule):
 
     def is_applicable(self):
-        n = symbols('n', real=True)
+        n = symbols('n')
         lim = limit(self.loop_guard_change, n, oo)
         return lim > 0
 
