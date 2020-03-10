@@ -100,8 +100,43 @@ def __get_bounds_of_evar(evar: Expr) -> Bounds:
 
 
 def __compute_bounds_of_evar(evar: Expr):
+    if len(evar.free_symbols) == 1 and get_all_evar_powers(evar)[0] > 2:
+        variable = evar.free_symbols.pop()
+        power = get_all_evar_powers(evar)[0]
+        if power % 2 == 0:
+            evar = variable ** 2
+            power = int(power / 2)
+        else:
+            evar = variable
+            power = power
+        __compute_bounds_of_evar_power(evar, power)
+    else:
+        __compute_bounds_of_evar_structure(evar)
+
+
+def __compute_bounds_of_evar_power(evar: Expr, power: Number):
     """
-    Computes the bounds of an evar and stores it in the bounds store
+    Computes the bounds of evar**odd_power by just taking the bounds of evar and raising it to the given power.
+    This is only sound if the given power is odd or the evar is always positive
+    """
+    n = symbols('n')
+    evar_bounds = __get_bounds_of_evar(evar)
+    upper_bound = simplify_asymptotically(evar_bounds.upper ** power, n)
+    lower_bound = simplify_asymptotically(evar_bounds.lower ** power, n)
+
+    bounds = Bounds()
+    bounds.expression = evar ** power
+    bounds.upper = upper_bound
+    bounds.lower = lower_bound
+    bounds.maybe_positive = evar_bounds.maybe_positive
+    bounds.maybe_negative = evar_bounds.maybe_negative
+
+    store[bounds.expression] = bounds
+
+
+def __compute_bounds_of_evar_structure(evar: Expr):
+    """
+    Computes the bounds of an evar by representing it as a recurrence relation
     """
     n = symbols('n')
     structures = structure_store.get_structures_of_evar(evar)

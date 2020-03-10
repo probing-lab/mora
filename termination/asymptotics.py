@@ -67,9 +67,12 @@ def simplify_asymptotically(expression: Expr, n: Symbol):
     For a given expression returns another expression such that eventually the two expressions grow/shrink at
     the same rate.
     """
+    if n not in expression.free_symbols:
+        return expression
+
     limit_exp = limit(expression, n, oo)
     if limit_exp == 0:
-        return expression.copy()
+        return expression
 
     c = unique_symbol('c', positive=True)
     if limit_exp < 0:
