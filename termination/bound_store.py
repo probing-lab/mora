@@ -1,3 +1,7 @@
+"""
+This modules contains functions providing the bounds of given evars and polynomial of evars.
+"""
+
 from diofant import *
 from mora.core import Program
 from termination.utils import *
@@ -26,12 +30,15 @@ def set_program(p: Program):
 
 
 def get_bounds_of_expr(expression: Expr) -> Bounds:
+    """
+    Computes the bounds of a polynomial over the program variables. It does so by substituting the bounds of the evars.
+    """
     expression = sympify(expression)
     variables = set(program.variables).difference({symbols('n')})
     expression = expression.as_poly(variables)
     expr_bounds = __initialize_bounds_for_expression(expression)
-    monoms = get_monoms(expression)
-    for evar in monoms:
+    evars = get_monoms(expression)
+    for evar in evars:
         evar_bounds = __get_bounds_of_evar(evar)
         __replace_evar_in_expr_bounds(evar, evar_bounds, expression, expr_bounds)
 
@@ -41,6 +48,10 @@ def get_bounds_of_expr(expression: Expr) -> Bounds:
 
 
 def __replace_evar_in_expr_bounds(evar, evar_bounds: Bounds, expression: Poly, expr_bounds: Bounds):
+    """
+    Helper function which replaces a single evar with its bounds. Which bound to take depends on the coefficient
+    of the evar.
+    """
     coeff = expression.coeff_monomial(evar)
     if coeff > 0:
         upper = evar_bounds.upper
@@ -55,16 +66,21 @@ def __replace_evar_in_expr_bounds(evar, evar_bounds: Bounds, expression: Poly, e
 
     expr_bounds.upper = expr_bounds.upper.subs({evar: upper})
     expr_bounds.lower = expr_bounds.lower.subs({evar: lower})
+    # Rough estimate of whether the expression is positive/negative
     expr_bounds.maybe_positive = expr_bounds.maybe_positive or pos
     expr_bounds.maybe_negative = expr_bounds.maybe_negative or neg
 
 
 def __initialize_bounds_for_expression(expression: Poly) -> Bounds:
+    """
+    Initializes the bounds object for an expression by setting the lower and upper bounds equal to the expression.
+    """
     bounds = Bounds()
     bounds.expression = expression
     bounds.lower = expression.copy()
     bounds.upper = expression.copy()
 
+    # Initialize the polarity of the expression by the polarity of the deterministic part
     n_expr = expression.coeff_monomial(1)
     pos, neg = get_polarity(n_expr, symbols('n'))
 
@@ -74,6 +90,9 @@ def __initialize_bounds_for_expression(expression: Poly) -> Bounds:
 
 
 def __get_bounds_of_evar(evar: Expr) -> Bounds:
+    """
+    Computes the bounds of an evar in a lazy way
+    """
     evar = sympify(evar)
     if evar not in store:
         __compute_bounds_of_evar(evar)
@@ -81,6 +100,9 @@ def __get_bounds_of_evar(evar: Expr) -> Bounds:
 
 
 def __compute_bounds_of_evar(evar: Expr):
+    """
+    Computes the bounds of an evar and stores it in the bounds store
+    """
     n = symbols('n')
     structures = structure_store.get_structures_of_evar(evar)
     inhom_parts_bounds = [get_bounds_of_expr(s.inhom_part) for s in structures]
@@ -102,6 +124,13 @@ def __compute_bounds_of_evar(evar: Expr):
     max_upper_candidate = get_eventual_bound(upper_candidates, n, upper=True)
     min_lower_candidate = get_eventual_bound(lower_candidates, n, upper=False)
 
+    # If evar is negative upper bound cannot be larger than 0
+    if not maybe_pos:
+        max_upper_candidate = get_eventual_bound([max_upper_candidate, sympify(0)], n, upper=False)
+    # If evar is positive lower bound cannot be smaller than 0
+    if not maybe_neg:
+        min_lower_candidate = get_eventual_bound([min_lower_candidate, sympify(0)], n, upper=True)
+
     bounds = Bounds()
     bounds.expression = evar
     bounds.upper = max_upper_candidate.as_expr()
@@ -112,12 +141,17 @@ def __compute_bounds_of_evar(evar: Expr):
     store[evar] = bounds
 
 
-def __get_evar_polarity(evar: Expr, inhom_parts_bounds: [Bounds], initial_value: Number):
+def __get_evar_polarity(evar: Expr, inhom_parts_bounds: [Bounds], initial_value: Number) -> (bool, bool):
+    """
+    Returns a rough but sound estimate of whether or not a given evar can be positive and negative
+    """
+    # If all powers of the variables are even, the evar is only positive
     powers = get_all_evar_powers(evar)
     all_powers_even = all([p % 2 == 0 for p in powers])
     if all_powers_even:
         return True, False
 
+    # Otherwise estimate evar polarity by polarity of initial condition and polarity of inhomogenous parts
     initial_pos = sympify(initial_value) > 0
     if initial_pos.is_Relational:
         initial_pos = True
@@ -135,7 +169,11 @@ def __get_evar_polarity(evar: Expr, inhom_parts_bounds: [Bounds], initial_value:
     return maybe_pos, maybe_neg
 
 
-def __get_starting_values(maybe_pos, maybe_neg):
+def __get_starting_values(maybe_pos: bool, maybe_neg: bool) -> [Expr]:
+    """
+    Returns the possible values of an evar after which an evar is within a certain bound. This gets used
+    to solve the recurrence relations for the bounds candidates.
+    """
     values = []
     if maybe_pos:
         values.append(unique_symbol('d', positive=True))
@@ -147,7 +185,10 @@ def __get_starting_values(maybe_pos, maybe_neg):
     return values
 
 
-def __compute_bound_candidates(coefficients, inhom_parts, starting_values):
+def __compute_bound_candidates(coefficients: [Number], inhom_parts: [Expr], starting_values: [Expr]) -> [Expr]:
+    """
+    Computes functions which could potentially be bounds
+    """
     candidates = []
 
     for c in coefficients:
@@ -155,22 +196,29 @@ def __compute_bound_candidates(coefficients, inhom_parts, starting_values):
             c0 = symbols('c0')
             solution = __compute_bound_candidate(c, part, c0)
             for v in starting_values:
-                new_candidates = __split_on_signums(solution.subs({c0: v}))
+                solution = solution.subs({c0: v})
+                # If a candidate contains signum functions, we have to split the candidate into more candidates
+                new_candidates = __split_on_signums(solution)
                 candidates += new_candidates
 
     return candidates
 
 
-def __compute_bound_candidate(c, inhom_part, starting_value):
+def __compute_bound_candidate(c: Number, inhom_part: Expr, starting_value: Expr) -> Expr:
+    """
+    Computes a single function which is potentially a bound be solving a recurrence relation
+    """
     f = Function('f')
     n = symbols('n')
-    print("Solving recurrence: ", f(n) - c*f(n-1) - inhom_part)
     solution = rsolve(f(n) - c*f(n-1) - inhom_part, f(n), {f(0): starting_value})
-    print("Found solution!")
     return solution
 
 
-def __split_on_signums(expression: Expr):
+def __split_on_signums(expression: Expr) -> [Expr]:
+    """
+    For a given expression returns all expression resulting from splitting it on signum functions occurring in
+    its limit, e.g. for c*sign(d - 1) returns [c*e, c*(-e)]
+    """
     exps = [expression]
     n = symbols('n')
     expression_limit = limit(expression, n, oo)
