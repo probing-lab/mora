@@ -18,6 +18,14 @@ class Bounds:
     upper: Expr
     maybe_positive: bool
     maybe_negative: bool
+    __absolute_upper__: Expr = None
+
+    @property
+    def absolute_upper(self):
+        if self.__absolute_upper__ is None:
+            n = symbols('n')
+            self.__absolute_upper__ = get_eventual_bound([self.upper, self.lower * -1], n, upper=True)
+        return self.__absolute_upper__
 
 
 def set_program(p: Program):
@@ -76,7 +84,7 @@ def __initialize_bounds_for_expression(expression: Poly) -> Bounds:
     Initializes the bounds object for an expression by setting the lower and upper bounds equal to the expression.
     """
     bounds = Bounds()
-    bounds.expression = expression
+    bounds.expression = expression.as_expr()
     bounds.lower = expression.copy()
     bounds.upper = expression.copy()
 
@@ -93,7 +101,7 @@ def __get_bounds_of_evar(evar: Expr) -> Bounds:
     """
     Computes the bounds of an evar in a lazy way
     """
-    evar = sympify(evar)
+    evar = sympify(evar).as_expr()
     if evar not in store:
         __compute_bounds_of_evar(evar)
     return store[evar]
@@ -125,7 +133,7 @@ def __compute_bounds_of_evar_power(evar: Expr, power: Number):
     lower_bound = simplify_asymptotically(evar_bounds.lower ** power, n)
 
     bounds = Bounds()
-    bounds.expression = evar ** power
+    bounds.expression = (evar ** power).as_expr()
     bounds.upper = upper_bound
     bounds.lower = lower_bound
     bounds.maybe_positive = evar_bounds.maybe_positive
@@ -167,13 +175,13 @@ def __compute_bounds_of_evar_structure(evar: Expr):
         min_lower_candidate = get_eventual_bound([min_lower_candidate, sympify(0)], n, upper=True)
 
     bounds = Bounds()
-    bounds.expression = evar
+    bounds.expression = evar.as_expr()
     bounds.upper = max_upper_candidate.as_expr()
     bounds.lower = min_lower_candidate.as_expr()
     bounds.maybe_positive = maybe_pos
     bounds.maybe_negative = maybe_neg
 
-    store[evar] = bounds
+    store[bounds.expression] = bounds
 
 
 def __get_evar_polarity(evar: Expr, inhom_parts_bounds: [Bounds], initial_value: Number) -> (bool, bool):
@@ -211,9 +219,9 @@ def __get_starting_values(maybe_pos: bool, maybe_neg: bool) -> [Expr]:
     """
     values = []
     if maybe_pos:
-        values.append(unique_symbol('d', positive=True))
+        values.append(unique_symbol('d', positive=True, real=True))
     if maybe_neg:
-        values.append(unique_symbol('d', positive=True) * -1)
+        values.append(unique_symbol('d', positive=True, real=True) * -1)
     if not maybe_pos and not maybe_neg:
         values.append(sympify(0))
 
@@ -261,7 +269,7 @@ def __split_on_signums(expression: Expr) -> [Expr]:
     for s in signums:
         new_exps = []
         for exp in exps:
-            constant = unique_symbol('e', positive=True)
+            constant = unique_symbol('e', positive=True, real=True)
             new_exps.append(exp.subs({s: constant}))
             new_exps.append(exp.subs({s: constant * -1}))
         exps = new_exps

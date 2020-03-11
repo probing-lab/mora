@@ -74,7 +74,7 @@ def simplify_asymptotically(expression: Expr, n: Symbol):
     if limit_exp == 0:
         return expression
 
-    c = unique_symbol('c', positive=True)
+    c = unique_symbol('c', positive=True, real=True)
     if limit_exp < 0:
         c = -c
 
