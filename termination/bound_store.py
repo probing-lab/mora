@@ -24,7 +24,7 @@ class Bounds:
     def absolute_upper(self):
         if self.__absolute_upper__ is None:
             n = symbols('n')
-            self.__absolute_upper__ = get_eventual_bound([self.upper, self.lower * -1], n, upper=True)
+            self.__absolute_upper__ = get_eventual_bound([self.upper, self.lower * -1], n)
         return self.__absolute_upper__
 
 
@@ -155,8 +155,8 @@ def __compute_bounds_of_evar_structure(evar: Expr):
     inhom_parts_bounds_lower = [b.lower.subs({n: n - 1}) for b in inhom_parts_bounds]
     inhom_parts_bounds_upper = [b.upper.subs({n: n - 1}) for b in inhom_parts_bounds]
 
-    max_upper = get_eventual_bound(inhom_parts_bounds_upper, n, upper=True)
-    min_lower = get_eventual_bound(inhom_parts_bounds_lower, n, upper=False)
+    max_upper = get_eventual_bound(inhom_parts_bounds_upper, n, direction=Direction.PosInf)
+    min_lower = get_eventual_bound(inhom_parts_bounds_lower, n, direction=Direction.NegInf)
     min_rec = min([s.recurrence_constant for s in structures])
     max_rec = max([s.recurrence_constant for s in structures])
     starting_values = __get_starting_values(maybe_pos, maybe_neg)
@@ -164,15 +164,15 @@ def __compute_bounds_of_evar_structure(evar: Expr):
     upper_candidates = __compute_bound_candidates({min_rec, max_rec}, {max_upper}, starting_values)
     lower_candidates = __compute_bound_candidates({min_rec, max_rec}, {min_lower}, starting_values)
 
-    max_upper_candidate = get_eventual_bound(upper_candidates, n, upper=True)
-    min_lower_candidate = get_eventual_bound(lower_candidates, n, upper=False)
+    max_upper_candidate = get_eventual_bound(upper_candidates, n, direction=Direction.PosInf)
+    min_lower_candidate = get_eventual_bound(lower_candidates, n, direction=Direction.NegInf)
 
     # If evar is negative upper bound cannot be larger than 0
     if not maybe_pos:
-        max_upper_candidate = get_eventual_bound([max_upper_candidate, sympify(0)], n, upper=False)
+        max_upper_candidate = get_eventual_bound([max_upper_candidate, sympify(0)], n, direction=Direction.NegInf)
     # If evar is positive lower bound cannot be smaller than 0
     if not maybe_neg:
-        min_lower_candidate = get_eventual_bound([min_lower_candidate, sympify(0)], n, upper=True)
+        min_lower_candidate = get_eventual_bound([min_lower_candidate, sympify(0)], n, direction=Direction.PosInf)
 
     bounds = Bounds()
     bounds.expression = evar.as_expr()

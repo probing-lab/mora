@@ -4,4 +4,4 @@
 
 stop = 0
 while stop < 1:
-    stop = 1 @ p; 0
+    stop = 1 @ 1/2; 0
