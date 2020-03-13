@@ -32,35 +32,16 @@ def decide_termination(program: Program):
         MartingaleRule(lgc, me_pos, program),
         RepulsingSMRule(lgc, me_neg, program)
     ]
+    result = Result()
 
-    result = Result.UNKNOWN
     for rule in rules:
         if rule.is_applicable():
-            result = rule.run()
-            if result is not Result.UNKNOWN:
+            result = rule.run(result)
+            if result.all_known():
                 break
 
-    # TODO: refactor output
-    is_past = "maybe"
-    is_ast = "maybe"
-    is_non_term = "maybe"
-
-    if result is Result.PAST:
-        is_past = "yes"
-        is_ast = "yes"
-        is_non_term = "no"
-    elif result is Result.AST:
-        is_past = "maybe"
-        is_ast = "yes"
-        is_non_term = "no"
-    elif result is Result.NONTERM:
-        is_past = "no"
-        is_ast = "no"
-        is_non_term = "yes"
-
-    print("PAST: ", is_past)
-    print("AST: ", is_ast)
-    print("NON-TERM: ", is_non_term)
+    print("PAST: ", result.PAST)
+    print("AST: ", result.AST)
 
 
 def create_martingale_expression(program: Program, invert: bool):

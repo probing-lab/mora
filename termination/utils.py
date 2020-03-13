@@ -1,5 +1,19 @@
 import math
+from enum import Enum, auto
 from diofant import *
+
+
+class Answer(Enum):
+    FALSE = auto()
+    TRUE = auto()
+    UNKNOWN = auto()
+
+    def is_true(self):
+        return self is Answer.TRUE
+
+    def is_known(self):
+        return self is not Answer.UNKNOWN
+
 
 __COUNTER = 0
 

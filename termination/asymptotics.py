@@ -1,11 +1,11 @@
 from diofant import *
 from termination.utils import *
-from enum import Enum
+from enum import Enum, auto
 
 
 class Direction(Enum):
-    PosInf = 1
-    NegInf = 2
+    PosInf = auto()
+    NegInf = auto()
 
 
 def get_eventual_bound(fs: [Expr], n: Symbol, direction: Direction = Direction.PosInf) -> Expr:
@@ -38,10 +38,10 @@ def is_dominating_or_same(f1: Expr, f2: Expr, n: Symbol, direction: Direction = 
     if not limit_f1.is_infinite and not limit_f2.is_infinite:
         if upper:
             # f1 dominates if it's eventually positive or both are negative
-            return limit_f1.is_positive or limit_f2.is_negative
+            return limit_f1.is_positive or limit_f2.is_negative or (limit_f1.is_zero and limit_f2.is_zero)
         else:
             # f1 dominates if it's eventually negative or both are positive
-            return limit_f1.is_negative or limit_f2.is_positive
+            return limit_f1.is_negative or limit_f2.is_positive or (limit_f1.is_zero and limit_f2.is_zero)
 
     # FROM HERE onward: at least one limit is +/- infinity
 

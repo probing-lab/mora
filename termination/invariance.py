@@ -6,21 +6,8 @@ The methods are of course not complete in general.
 from diofant import Expr, sympify, symbols
 from mora.core import Program
 from termination import bound_store
-from termination.utils import get_max_0
+from termination.utils import get_max_0, Answer
 from termination.asymptotics import is_dominating_or_same, Direction
-from enum import Enum
-
-
-class Answer(Enum):
-    FALSE = 1
-    TRUE = 2
-    UNKNOWN = 3
-
-    def to_boolean(self):
-        return self is Answer.TRUE
-
-    def is_known(self):
-        return self is not Answer.UNKNOWN
 
 
 def is_invariant(expression: Expr, program: Program) -> bool:
@@ -51,10 +38,10 @@ def is_probabilistic_invariant(expression: Expr, program: Program) -> bool:
     """
     answer = __is_probabilistic_invariant_via_bounds(expression)
     if answer.is_known():
-        return answer.to_boolean()
+        return answer.is_true()
 
     answer = __is_probabilistic_invariant_via_z3(expression, program)
-    return answer.to_boolean()
+    return answer.is_true()
 
 
 def __is_probabilistic_invariant_via_bounds(expression: Expr) -> Answer:
