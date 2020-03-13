@@ -108,6 +108,7 @@ def __get_bounds_of_evar(evar: Expr) -> Bounds:
 
 
 def __compute_bounds_of_evar(evar: Expr):
+    print(f"Computing bounds for {evar.as_expr()}")
     if len(evar.free_symbols) == 1 and get_all_evar_powers(evar)[0] > 2:
         variable = evar.free_symbols.pop()
         power = get_all_evar_powers(evar)[0]
@@ -120,6 +121,7 @@ def __compute_bounds_of_evar(evar: Expr):
         __compute_bounds_of_evar_power(evar, power)
     else:
         __compute_bounds_of_evar_structure(evar)
+    print(f"Found bounds for {evar.as_expr()}")
 
 
 def __compute_bounds_of_evar_power(evar: Expr, power: Number):

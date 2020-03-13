@@ -11,6 +11,17 @@ from mora.mora import mora
 from termination import decide_termination
 from termination.bounds import bounds
 
+
+HEADER = """
+  _____           _  _______                  _             _             
+ |  __ \         | ||__   __|                (_)           | |            
+ | |__) | __ ___ | |__ | | ___ _ __ _ __ ___  _ _ __   __ _| |_ ___  _ __ 
+ |  ___/ '__/ _ \| '_ \| |/ _ \ '__| '_ ` _ \| | '_ \ / _` | __/ _ \| '__|
+ | |   | | | (_) | |_) | |  __/ |  | | | | | | | | | | (_| | || (_) | |   
+ |_|   |_|  \___/|_.__/|_|\___|_|  |_| |_| |_|_|_| |_|\__,_|\__\___/|_|   
+"""
+
+
 parser = ArgumentParser(description="Run MORA on probabilistic programs stored in files")
 
 parser.add_argument(
@@ -64,6 +75,7 @@ def main():
 
     for benchmark in args.benchmarks:
         if args.termination:
+            print(HEADER)
             program = mora(benchmark, goal=1, output_format=args.output_format)
             decide_termination(program)
         elif args.bounds:
