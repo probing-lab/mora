@@ -14,6 +14,14 @@ class Answer(Enum):
     def is_known(self):
         return self is not Answer.UNKNOWN
 
+    def __str__(self):
+        if self is Answer.TRUE:
+            return "Yes"
+        if self is Answer.FALSE:
+            return "No"
+        if self is Answer.UNKNOWN:
+            return "Maybe"
+
 
 __COUNTER = 0
 

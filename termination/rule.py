@@ -20,3 +20,24 @@ class Rule(ABC):
 
     @abstractmethod
     def run(self, result: Result) -> Result: pass
+
+
+class Witness(ABC):
+
+    def __init__(self, kind):
+        self.kind = kind
+        self.data = {}
+        self.explanation = ""
+
+    def print(self):
+        headline = f"Witness for {self.kind}"
+        print(headline)
+        print("".join(["-" for n in range(len(headline))]))
+        key_length = max([len(k) for k in self.data.keys()]) + 2
+
+        for key, value in self.data.items():
+            print(f"{key.ljust(key_length)} {value}")
+
+        print()
+        print("Explanation:")
+        print(self.explanation)
