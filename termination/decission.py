@@ -27,6 +27,7 @@ def decide_termination(program: Program):
     lgc = prepare_loop_guard_change(program)
     me_pos = create_martingale_expression(program, False)
     me_neg = create_martingale_expression(program, True)
+    print("Martingale expression: ", me_pos.as_expr())
     rules = [
         InitialStateRule(lgc, me_pos, program),
         RankingSMRule(lgc, me_pos, program),

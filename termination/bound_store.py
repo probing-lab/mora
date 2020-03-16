@@ -50,8 +50,11 @@ def get_bounds_of_expr(expression: Expr) -> Bounds:
         evar_bounds = __get_bounds_of_evar(evar)
         __replace_evar_in_expr_bounds(evar, evar_bounds, expression, expr_bounds)
 
-    expr_bounds.upper = simplify_asymptotically(expr_bounds.upper.as_expr(), symbols('n'))
-    expr_bounds.lower = simplify_asymptotically(expr_bounds.lower.as_expr(), symbols('n'))
+    upper_candidates = __split_on_signums(expr_bounds.upper.as_expr())
+    lower_candidates = __split_on_signums(expr_bounds.lower.as_expr())
+
+    expr_bounds.upper = get_eventual_bound(upper_candidates, symbols('n'), direction=Direction.PosInf)
+    expr_bounds.lower = get_eventual_bound(lower_candidates, symbols('n'), direction=Direction.NegInf)
     return expr_bounds
 
 
@@ -269,10 +272,19 @@ def __split_on_signums(expression: Expr) -> [Expr]:
     expression_limit = limit(expression, n, oo)
     signums = get_signums_in_expression(expression_limit)
     for s in signums:
+        # Choose an arbitrary symbol from the signum expression
+        assert len(s.free_symbols) >= 1
+        symbol = list(s.free_symbols)[0]
         new_exps = []
         for exp in exps:
+            # Get rid of the signum expression by replacing it by a positve and an negative constant
+            # This is done by substituting the arbitrary symbol by just the right expression s.t. things cancel out
             constant = unique_symbol('e', positive=True, real=True)
-            new_exps.append(exp.subs({s: constant}))
-            new_exps.append(exp.subs({s: constant * -1}))
+            solutions = solve(s - constant, [symbol])
+            assert len(solutions) >= 1
+            solution_pos = solutions[0][symbol]
+            solution_neg = solution_pos.subs({constant: constant * -1})
+            new_exps.append(exp.subs({symbol: solution_pos}))
+            new_exps.append(exp.subs({symbol: solution_neg}))
         exps = new_exps
     return exps
