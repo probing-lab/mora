@@ -23,7 +23,10 @@ class InputParser:
                 self.__program.source = file.read()
                 self.__program.name = source.split("/")[-1]
         else:
-            raise Exception(f"File {source} not found")
+            # Temporary modification to allow string input to MORA instead of from a file.
+            self.__program.source = source
+            self.__program.name = "from_text"
+            #raise Exception(f"File {source} not found")
 
     def parse_source(self):
         with open(GRAMMAR_FILE_PATH) as grammar_file:
