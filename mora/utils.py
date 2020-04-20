@@ -57,6 +57,20 @@ class RandomVar:
 
         if self.distribution == 'gauss' or self.distribution == 'normal':
             mu, sigma_squared = self.parameters
+            # For low moments avoid scipy.stats.moments as it does not support
+            # parametric parameters. In the future get all moments directly,
+            # using the following properties:
+            # https://math.stackexchange.com/questions/1945448/methods-for-finding-raw-moments-of-the-normal-distribution
+            if k == 0:
+                return 1
+            elif k == 1:
+                return mu
+            elif k == 2:
+                return mu**2 + sigma_squared
+            elif k == 3:
+                return mu*(mu^2 + 3*sigma_squared)
+            elif k == 4:
+                return mu**4 + 6*mu**2*sigma_squared + 3*sigma_squared**2
             moment = norm(loc=mu, scale=sqrt(sigma_squared)).moment(k)
             return Rational(moment)
 
