@@ -28,3 +28,4 @@ def output_results(prog, invariants, computation_time, output_format=" "):
         if k:
             print(" E[{}] = {}".format(k, invariants[k]))
     print("Computation time {}s.".format(computation_time))
+    return [" E[{}] = {}".format(k, invariants[k]) for k in invariants if k]

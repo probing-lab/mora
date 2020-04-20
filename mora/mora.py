@@ -17,7 +17,8 @@ def mora(source: str, goal: int = 1, output_format: str = ""):
         program = parser.parse_source()
         invariants = core(program, goal)
         time = timer() - start
-        output_results(program, invariants, time, output_format)
+        out = output_results(program, invariants, time, output_format)
+        return out
     except Exception as exception:
         print("Execution failed!")
         print(exception)
