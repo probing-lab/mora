@@ -36,10 +36,10 @@ class RepulsingSMRule(Rule):
 
         n = symbols('n')
         cs = get_eventual_bound([cb.absolute_upper for cb in cases_bounds], n)
-        epsilons = simplify(bound_store.get_bounds_of_expr(self.martingale_expression).lower * -1)
+        epsilons = simplify(bound_store.get_bounds_of_expr(self.martingale_expression).upper * -1)
 
         # The epsilons have to grow more or equal to the cs
-        if is_dominating_or_same(epsilons, cs, n):
+        if not is_dominating_or_same(sympify(0), epsilons, n) and is_dominating_or_same(epsilons, cs, n):
             result.PAST = Answer.FALSE
             result.AST = Answer.FALSE
             result.add_witness(NONASTWitness(

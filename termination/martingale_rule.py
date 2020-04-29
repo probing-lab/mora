@@ -15,7 +15,7 @@ class MartingaleRule(Rule):
     def is_applicable(self):
         n = symbols('n')
         lim = limit(self.loop_guard_change, n, oo)
-        return lim == 0
+        return lim <= 0
 
     def run(self, result: Result):
         if result.AST.is_known():
