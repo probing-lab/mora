@@ -1,0 +1,7 @@
+# The program is AST (and not PAST)
+
+x = 10
+y = 0
+while x > 0:
+    y = y + 1 @ 1/3; y + 2 @ 1/3; y + 3
+    x = x + y**2 - 1 @ 1/2; x - y**2 + 1
