@@ -68,7 +68,7 @@ def prepare_loop_guard_change(program: Program):
     loop_guard_change = program.moments[LOOP_GUARD_CHANGE]
     n_int = symbols('n', integer=True)
     n = symbols('n')
-    loop_guard_change = loop_guard_change.subs({n_int: n})
+    loop_guard_change = simplify(loop_guard_change.subs({n_int: n}))
 
     return loop_guard_change
 

@@ -16,7 +16,7 @@ class RankingSMRule(Rule):
         n = symbols('n')
         lim = limit(self.loop_guard_change, n, oo)
         max_0 = get_max_0(self.loop_guard_change, n)
-        return lim < 0 or max_0 > 0
+        return bool(lim < 0 or max_0 > 0)
 
     def run(self, result: Result):
         if result.PAST.is_known():
