@@ -48,7 +48,7 @@ class RepulsingSMRule(Rule):
                 epsilons,
                 cs
             ))
-        elif is_dominating_or_same(epsilons, sympify(0), n) and is_dominating_or_same(sympify(1), cs, n):
+        elif is_dominating_or_same(sympify(0), epsilons, n) and is_dominating_or_same(sympify(1), cs, n):
             result.PAST = Answer.FALSE
             result.add_witness(NONPASTWitness(
                 sympify(self.program.loop_guard) * -1,
