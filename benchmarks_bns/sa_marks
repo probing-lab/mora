@@ -1,0 +1,18 @@
+
+while true:
+    ALG = RV(gauss, mualg, 112.8)
+    ANL = RV(gauss, -3.57 + 0.99*ALG, ssanl)
+    STAT = RV(gauss, -11.19 + 0.76*ALG + (0.31+sam)*ANL, 158.8)
+    Average = (ALG + ANL + STAT)/3
+
+        E[Average^1] = 0.33*mualg*sam + 1.01896666666667*mualg - 1.19*sam - 5.2889
+        E[ALG^1] = mualg
+        E[ANL^1] = 0.99*mualg - 3.57
+        E[STAT^1] = 0.99*mualg*sam + 1.0669*mualg - 3.57*sam - 12.2967
+       Computation time 0.18850348100000014s.
+
+       E[Average^2] = 0.1089*mualg**2*sam**2 + 0.672518*mualg**2*sam + 1.03829306777778*mualg**2 - 0.7854*mualg*sam**2 - 5.91581466666667*mualg*sam - 10.7784256066667*mualg + 0.111111111111111*sam**2*ssanl + 13.70002*sam**2 + 0.291111111111111*sam*ssanl + 88.4476124*sam + 0.190677777777778*ssanl + 162.736365699778
+       E[ALG^2] = 1.0*mualg**2 + 112.8
+       E[ANL^2] = 0.9801*mualg**2 - 7.0686*mualg + 1.0*ssanl + 123.30018
+       E[STAT^2] = 0.9801*mualg**2*sam**2 + 2.112462*mualg**2*sam + 1.13827561*mualg**2 - 7.0686*mualg*sam**2 - 31.965132*mualg*sam - 26.23869846*mualg + 1.0*sam**2*ssanl + 123.30018*sam**2 + 0.62*sam*ssanl + 326.0841516*sam + 0.0961*ssanl + 438.406319698
+      Computation time 0.48724156399999996s.

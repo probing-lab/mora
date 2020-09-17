@@ -1,0 +1,6 @@
+
+while true:
+    ALG = RV(gauss, 50.6, 112.8)
+    ANL = RV(gauss, -3.57 + 0.99*ALG, 110.25)
+    STAT = RV(gauss, -11.19 + 0.76*ALG + 0.31*ANL, 158.8)
+    Average = (ALG + ANL + STAT)/3

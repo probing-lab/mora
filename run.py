@@ -3,7 +3,6 @@
 This runnable script allows the user to run MORA on probabilistic programs stored in files
 For the command line arguments run the script with "--help".
 """
-
 import glob
 from argparse import ArgumentParser
 from mora.mora import mora

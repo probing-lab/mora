@@ -1,0 +1,8 @@
+
+while true:
+    ALG = RV(gauss, 50.6, 112.8)
+    ANL = RV(gauss, -3.57 + 0.99*ALG, 110.25)
+    STAT = RV(gauss, -11.19 + 0.76*ALG + 0.31*ANL, 158.8)
+    VECT = RV(gauss, 12.41 + 0.75*ALG, 109.8)
+    MECH = RV(gauss, -12.36 + 0.54*ALG + 0.46*VECT, 195.2)
+    AVG = (ALG + ANL + STAT + VECT + MECH)/5
