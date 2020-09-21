@@ -1,4 +1,4 @@
-from diofant import prod, Symbol
+from diofant import prod, Symbol, sympify
 from mora.utils import Update
 from .solver import solve_recurrences
 from typing import List, Dict
@@ -34,7 +34,7 @@ def core(program: Program, goal: int = 1):
             for j, term in enumerate(terms):
                 pow = term.monoms()[0][0] # power of var in term
                 terms[j] = updates[var].update_term(term, pow).as_poly(rvars)
-            M = sum(terms).as_poly(rvars)
+            M = sympify(sum(terms)).as_poly(rvars)
 
         MBRecs[M_orig] = M
 

@@ -68,7 +68,7 @@ class RandomVar:
             elif k == 2:
                 return mu**2 + sigma_squared
             elif k == 3:
-                return mu*(mu^2 + 3*sigma_squared)
+                return mu*(mu**2 + 3*sigma_squared)
             elif k == 4:
                 return mu**4 + 6*mu**2*sigma_squared + 3*sigma_squared**2
             moment = norm(loc=mu, scale=sqrt(sigma_squared)).moment(k)
@@ -86,4 +86,7 @@ def EV(expression):
 
 
 def get_exponent_of(var, mono):
-    return mono.as_poly([var]).monoms()[0][0]
+    monoms = mono.as_poly([var]).monoms()
+    if len(monoms) > 0 and len(monoms[0]) > 0:
+        return monoms[0][0]
+    return 0

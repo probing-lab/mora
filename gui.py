@@ -1,13 +1,10 @@
-
 # gui
 
 from tkinter import filedialog
 import tkinter as tk
 from mora.mora import mora
 
-
-root=tk.Tk("")
-
+root=tk.Tk()
 
 program_frame = tk.Frame(root)
 program_frame.grid()
@@ -28,7 +25,6 @@ def saveas():
 buttonSA=tk.Button(program_frame, text="Save file", command=saveas)
 buttonSA.grid()
 
-
 mora_frame = tk.Frame(root)
 mora_frame.grid(row=0, column=1)
 
@@ -39,6 +35,7 @@ tk.Label(mora_frame, text="Goal (integer)").grid(row=goalrow)
 goal=tk.Entry(mora_frame)
 goal.insert(10, "1")
 goal.grid(row=goalrow, column=1)
+
 
 def runmora():
     global text

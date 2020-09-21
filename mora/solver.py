@@ -43,7 +43,7 @@ def solve_recurrences(recs, rvars, init={}):
             eqn = fs[lhs](n) - sum( coeff * (solve(evar).subs({n: n-1}) if evar != lhs else fs[lhs](n-1)) for coeff, evar in evar_recs[lhs])
             #print('   equation', eqn)
             res = rsolve(eqn, fs[lhs](n), init={fs[lhs](0): initial_vals[lhs]})
-
+            res = res[0][fs[lhs]](n)
         else: # non recurrence
             res = sum( coeff * solve(evar).subs({n: n-1}) for coeff, evar in evar_recs[lhs])
         solutions[lhs] = simplify(res)
