@@ -1,4 +1,4 @@
-from diofant import sympify, Rational
+from diofant import sympify, Rational, Poly, prod
 from scipy.stats import norm
 from math import sqrt
 import re
@@ -90,3 +90,25 @@ def get_exponent_of(var, mono):
     if len(monoms) > 0 and len(monoms[0]) > 0:
         return monoms[0][0]
     return 0
+
+
+def get_monoms(poly: Poly):
+    """
+    Returns the list of monoms for a given polynomial
+    """
+    monoms = []
+    for powers in poly.monoms():
+        m = prod(var ** power for var, power in zip(poly.gens, powers))
+        if m != 1:
+            monoms.append(m.as_poly(poly.gens))
+    return monoms
+
+
+def monomial_is_constant(monomial: Poly):
+    """
+    Returns true iff the given monomial is constant
+    """
+    if monomial.is_zero:
+        return True
+    powers = monomial.monoms()[0]
+    return all(p == 0 for p in powers)

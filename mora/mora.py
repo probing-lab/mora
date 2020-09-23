@@ -10,15 +10,15 @@ from timeit import default_timer as timer
 
 
 def mora(source: str, goal: int = 1, output_format: str = ""):
-    try:
+    #try:
         start = timer()
         parser = InputParser()
         parser.set_source(source)
         program = parser.parse_source()
-        invariants = core(program, goal)
+        invariants = core(program, None, goal)
         time = timer() - start
         out = output_results(program, invariants, time, output_format)
         return out
-    except Exception as exception:
-        print("Execution failed!")
-        print(exception)
+    #except Exception as exception:
+    #    print("Execution failed!")
+    #    print(exception)
