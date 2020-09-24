@@ -75,7 +75,7 @@ class RandomVar:
             return Rational(moment)
 
         if self.distribution == 'unknown':
-            return f"{self.var_name}(0)^{k}"
+            return sympify(f"{self.var_name}(0)^{k}")
 
 
 def EV(expression):
