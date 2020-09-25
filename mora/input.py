@@ -36,8 +36,20 @@ class InputParser:
         visitor = UpdateProgramVisitor(self.__program)
         visitor.visit(tree)
         self.__set_unknown_initializations()
-
+        self.__set_finite_value_rvs()
         return self.__program
+
+    def __set_finite_value_rvs(self):
+        for variable, update in self.__program.updates.items():
+            if update.is_random_var is False:
+                all_branches_constant = True
+                for branch, _ in update.branches:
+                    if not polynomial_is_constant(branch.as_poly(self.__program.variables)):
+                        all_branches_constant = False
+                        break
+                if all_branches_constant:
+                    update.is_random_var = True
+                    update.random_var = RandomVar("finite", update.branches)
 
     def __set_unknown_initializations(self):
         for v in self.__program.variables:

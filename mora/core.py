@@ -98,9 +98,15 @@ def get_expected_initial_value(program: Program, monomial: Poly):
 
 
 def compute_solution_for_recurrence(recurr_coeff: Expr, inhom_part_solution: Expr, initial_value: Expr):
+    """
+    Computes the (unique) solution to the recurrence relation:
+    f(0) = initial_value; f(n+1) = recurr_coeff * f(n) + inhom_part_solution
+    """
+    if recurr_coeff.is_zero:
+        return inhom_part_solution
     f = Function('f')
     n = symbols('n', integer=True)
-    solution = rsolve(f(n) - recurr_coeff * f(n - 1) - inhom_part_solution, f(n), init={f(0): initial_value})
+    solution = rsolve(f(n + 1) - recurr_coeff * f(n) - inhom_part_solution, f(n), init={f(0): initial_value})
     solution = solution[0][f](n)
     return solution
 

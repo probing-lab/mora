@@ -30,7 +30,9 @@ class Update:
                     exp, prob = update.split("@")
                 else:
                     exp, prob = update, 1-sum([b[1] for b in self.branches])
-                self.branches.append((sympify(exp), sympify(prob)))
+                prob = sympify(prob)
+                if not prob.is_zero:
+                    self.branches.append((sympify(exp), prob))
             if sum([b[1] for b in self.branches]) != 1:
                 raise Exception(f"Branch probabilities for {self.var} update do not sum up to 1. Terminating.")
 
@@ -51,6 +53,9 @@ class RandomVar:
         self.var_name = var_name
 
     def compute_moment(self, k):
+        if self.distribution == 'finite':
+            return sum([p * (b ** k) for b, p in self.parameters])
+
         if self.distribution == 'uniform':
             l, u = self.parameters
             return (u**(k+1)-l**(k+1))/((k+1)*(u-l))
@@ -102,6 +107,17 @@ def get_monoms(poly: Poly):
         if m != 1:
             monoms.append(m.as_poly(poly.gens))
     return monoms
+
+
+def polynomial_is_constant(polynomial: Poly):
+    """
+    Returns true iff the given polynomial is constant
+    """
+    monoms = get_monoms(polynomial)
+    for m in monoms:
+        if not monomial_is_constant(m):
+            return False
+    return True
 
 
 def monomial_is_constant(monomial: Poly):
