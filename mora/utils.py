@@ -109,17 +109,6 @@ def get_monoms(poly: Poly):
     return monoms
 
 
-def polynomial_is_constant(polynomial: Poly):
-    """
-    Returns true iff the given polynomial is constant
-    """
-    monoms = get_monoms(polynomial)
-    for m in monoms:
-        if not monomial_is_constant(m):
-            return False
-    return True
-
-
 def monomial_is_constant(monomial: Poly):
     """
     Returns true iff the given monomial is constant

@@ -40,11 +40,12 @@ class InputParser:
         return self.__program
 
     def __set_finite_value_rvs(self):
+        program_variables = set(self.__program.variables)
         for variable, update in self.__program.updates.items():
             if update.is_random_var is False:
                 all_branches_constant = True
                 for branch, _ in update.branches:
-                    if not polynomial_is_constant(branch.as_poly(self.__program.variables)):
+                    if branch.free_symbols & program_variables:
                         all_branches_constant = False
                         break
                 if all_branches_constant:

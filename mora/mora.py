@@ -11,10 +11,13 @@ from timeit import default_timer as timer
 
 def mora(source: str, goal: int = 1, output_format: str = ""):
     #try:
-        start = timer()
+        print("Parsing Input")
         parser = InputParser()
         parser.set_source(source)
         program = parser.parse_source()
+        print("Finished parsing")
+
+        start = timer()
         invariants = core(program, None, goal)
         time = timer() - start
         out = output_results(program, invariants, time, output_format)

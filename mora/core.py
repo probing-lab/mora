@@ -28,7 +28,7 @@ def core(program: Program, goal_monomials: List[Expr] = None, goal_power: int = 
     solutions = {}
     for m in goal_monomials:
         solutions[m] = get_solution(program, m)
-    return solutions
+    return store
 
 
 def get_solution(program: Program, monomial: Poly):
@@ -100,7 +100,7 @@ def get_expected_initial_value(program: Program, monomial: Poly):
 def compute_solution_for_recurrence(recurr_coeff: Expr, inhom_part_solution: Expr, initial_value: Expr):
     """
     Computes the (unique) solution to the recurrence relation:
-    f(0) = initial_value; f(n+1) = recurr_coeff * f(n) + inhom_part_solution
+    f(0) = initial_value; f(n) = recurr_coeff * f(n-1) + inhom_part_solution
     """
     if recurr_coeff.is_zero:
         return inhom_part_solution
@@ -115,19 +115,22 @@ def get_expected_post_loop_body(program: Program, monomial: Poly):
     """
     For a given monomial m returns E[ m_{n+1} | F_n ]
     """
-    branches = [(monomial.copy(), 1)]
-    for variable in monomial.as_expr().free_symbols:
-        if variable in program.updates:
-            branches_new = []
-            for branch, prob in branches:
-                for b, p in program.updates[variable].branches:
-                    branches_new.append((branch.subs({variable: b}), prob * p))
-            branches = branches_new
+    print(f"LOOP BODY - Computing for {monomial.as_expr()}")
+    branches = [(monomial.as_expr(), 1)]
+    dependent_symbols = monomial.as_expr().free_symbols
+    for variable, update in reversed(program.updates.items()):
+        if update.is_random_var:
+            continue
+        if variable not in dependent_symbols:
+            continue
+        branches_new = []
+        for branch, prob in branches:
+            for b, p in program.updates[variable].branches:
+                dependent_symbols = dependent_symbols.union(b.free_symbols)
+                branches_new.append((branch.subs({variable: b}), prob * p))
+        branches = branches_new
 
-    expected = sympify(0)
-    for branch, prob in branches:
-        expected += prob * branch
-
+    expected = sum([prob * branch for branch, prob in branches])
     loop_body = expected.as_poly(program.variables)
     loop_body = replace_rvs_in_polynomial(program, loop_body)
     return loop_body

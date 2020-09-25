@@ -2,5 +2,5 @@
 x = 0
 c = 1
 while true:
-    c = c @ p; 0 @ 1-p
-    x = x + c @ 1
+    c = c @ p; 0
+    x = x + c
