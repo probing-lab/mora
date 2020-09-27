@@ -13,7 +13,11 @@ class Program:
         self.goals: List[int] = []
 
 
-store = {}
+# Stores the solutions of E-variables
+solution_store = {}
+
+# Stores the recurrences of E-variables
+recurrence_store = {}
 
 
 def core(program: Program, goal_monomials: List[Expr] = None, goal_power: int = 1):
@@ -21,6 +25,9 @@ def core(program: Program, goal_monomials: List[Expr] = None, goal_power: int = 
     Returns the expected values of given monomials raised to a given power. If no monomials are given the expected
     values of all program variables get computed.
     """
+    global solution_store, recurrence_store
+    solution_store = {}
+    recurrence_store = {}
     if goal_monomials is None:
         goal_monomials = [v**goal_power for v in program.variables]
 
@@ -28,19 +35,19 @@ def core(program: Program, goal_monomials: List[Expr] = None, goal_power: int = 
     solutions = {}
     for m in goal_monomials:
         solutions[m] = get_solution(program, m)
-    return store
+    return solutions
 
 
 def get_solution(program: Program, monomial: Poly):
     """
     For a given monomial returns its expected value by first checking if it already has been computed and stored
     """
-    global store
+    global solution_store
     if monomial_is_constant(monomial):
         return monomial.as_expr()
-    if monomial not in store:
-        store[monomial] = compute_solution(program, monomial)
-    return store[monomial]
+    if monomial.as_expr() not in solution_store:
+        solution_store[monomial.as_expr()] = compute_solution(program, monomial)
+    return solution_store[monomial.as_expr()]
 
 
 def compute_solution(program: Program, monomial: Poly):
@@ -53,7 +60,7 @@ def compute_solution(program: Program, monomial: Poly):
 
     factor = monomial.coeffs()[0]
     monomial = monomial.monic()
-    expected_post_loop_body = get_expected_post_loop_body(program, monomial)
+    expected_post_loop_body = get_recurrence(program, monomial)
     recurr_coeff = expected_post_loop_body.coeff_monomial(monomial.as_expr())
     inhom_part = expected_post_loop_body - (recurr_coeff * monomial)
     inhom_part_solution = get_inhom_part_solution(program, inhom_part)
@@ -111,29 +118,77 @@ def compute_solution_for_recurrence(recurr_coeff: Expr, inhom_part_solution: Exp
     return solution
 
 
-def get_expected_post_loop_body(program: Program, monomial: Poly):
+def get_recurrence(program: Program, monomial: Poly):
     """
-    For a given monomial m returns E[ m_{n+1} | F_n ]
+    For a given monomial returns its recurrence representation by first checking if it already
+    as been computed and stored
     """
-    print(f"LOOP BODY - Computing for {monomial.as_expr()}")
-    branches = [(monomial.as_expr(), 1)]
-    dependent_symbols = monomial.as_expr().free_symbols
+    global recurrence_store
+    if monomial_is_constant(monomial):
+        return monomial
+    if monomial.as_expr() not in recurrence_store:
+        recurrence_store[monomial.as_expr()] = compute_recurrence(program, monomial)
+    return recurrence_store[monomial.as_expr()]
+    pass
+
+
+def compute_recurrence(program: Program, monomial: Poly):
+    """
+    Computes the recurrence of a given monomial by splitting all variables which are dependent with the monomial
+    and substitute the recurrence for variables/monomials which are independent
+    """
+    recurrence, last_variable = resolve_dependent_variables(program, monomial)
+    recurrence = recurrence.as_poly(program.variables)
+    recurrence = replace_rvs_in_polynomial(program, recurrence)
+    remaining_variables = program.variables[0:program.variables.index(last_variable)]
+
+    if remaining_variables:
+        recurrence = recurrence.as_poly(remaining_variables)
+        monoms = get_monoms(recurrence)
+        replacements = {}
+        for monomial in monoms:
+            replacements[monomial.as_expr()] = get_recurrence(program, monomial.as_poly(program.variables)).as_expr()
+        if replacements:
+            recurrence = recurrence.as_expr().subs(replacements)
+
+    return recurrence.as_poly(program.variables)
+
+
+def resolve_dependent_variables(program: Program, monomial: Poly):
+    """
+    Iteratively splits a monomial on variables which are dependent with respect to the given monomial
+    """
+    result = monomial.as_expr()
+    powers = monomial.monoms()[0]
+    monom_variables = set([var for var, power in zip(monomial.gens, powers) if power > 0])
+    last_variable = None
     for variable, update in reversed(program.updates.items()):
         if update.is_random_var:
             continue
-        if variable not in dependent_symbols:
+        if variable not in result.free_symbols:
             continue
-        branches_new = []
-        for branch, prob in branches:
-            for b, p in program.updates[variable].branches:
-                dependent_symbols = dependent_symbols.union(b.free_symbols)
-                branches_new.append((branch.subs({variable: b}), prob * p))
-        branches = branches_new
+        branches = split_expression_on_variable(program, result, variable)
+        result = sum([prob * branch for branch, prob in branches])
+        last_variable = variable
+        if variable in monom_variables:
+            monom_variables.remove(variable)
+        # If all variables in the monomial have been considered only independent variables would remain, so stop.
+        if not monom_variables:
+            break
+    return result, last_variable
 
-    expected = sum([prob * branch for branch, prob in branches])
-    loop_body = expected.as_poly(program.variables)
-    loop_body = replace_rvs_in_polynomial(program, loop_body)
-    return loop_body
+
+def split_expression_on_variable(program: Program, expression, variable):
+    """
+    For a given expression, splits it with the updates of a given variable.
+    """
+    if variable not in expression.free_symbols:
+        return [(expression, sympify(1))]
+
+    branches = []
+    for b, p in program.updates[variable].branches:
+        branches.append((expression.subs({variable: b}), p))
+    return branches
 
 
 def replace_rvs_in_polynomial(program: Program, polynomial: Poly):
@@ -145,9 +200,9 @@ def replace_rvs_in_polynomial(program: Program, polynomial: Poly):
     replacements = {}
     for monomial in monoms:
         powers = monomial.monoms()[0]
-        vars_with_powers = [(var, power) for var, power in zip(monomial.gens, powers)]
+        vars_with_powers = [(var, power) for var, power in zip(monomial.gens, powers) if power > 0]
         for variable, power in vars_with_powers:
-            if power > 0 and variable in program.updates and program.updates[variable].is_random_var:
+            if variable in program.updates and program.updates[variable].is_random_var:
                 rv = program.updates[variable].random_var
                 moment = rv.compute_moment(power)
                 replacements[variable ** power] = moment
