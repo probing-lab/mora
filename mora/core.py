@@ -35,7 +35,7 @@ def core(program: Program, goal_monomials: List[Expr] = None, goal_power: int = 
     solutions = {}
     for m in goal_monomials:
         solutions[m] = get_solution(program, m)
-    return solutions
+    return solution_store
 
 
 def get_solution(program: Program, monomial: Poly):
@@ -60,9 +60,9 @@ def compute_solution(program: Program, monomial: Poly):
 
     factor = monomial.coeffs()[0]
     monomial = monomial.monic()
-    expected_post_loop_body = get_recurrence(program, monomial)
-    recurr_coeff = expected_post_loop_body.coeff_monomial(monomial.as_expr())
-    inhom_part = expected_post_loop_body - (recurr_coeff * monomial)
+    recurrence = get_recurrence(program, monomial)
+    recurr_coeff = recurrence.coeff_monomial(monomial.as_expr())
+    inhom_part = recurrence - (recurr_coeff * monomial)
     inhom_part_solution = get_inhom_part_solution(program, inhom_part)
     initial_value = get_expected_initial_value(program, monomial)
     print(f"Computing solution for { monomial.as_expr() }")
@@ -145,11 +145,10 @@ def compute_recurrence(program: Program, monomial: Poly):
     if remaining_variables:
         recurrence = recurrence.as_poly(remaining_variables)
         monoms = get_monoms(recurrence)
-        replacements = {}
+        new_recurrence = recurrence.coeff_monomial(1)
         for monomial in monoms:
-            replacements[monomial.as_expr()] = get_recurrence(program, monomial.as_poly(program.variables)).as_expr()
-        if replacements:
-            recurrence = recurrence.as_expr().subs(replacements)
+            new_recurrence += recurrence.coeff_monomial(monomial.as_expr()) * get_recurrence(program, monomial.as_poly(program.variables)).as_expr()
+        recurrence = new_recurrence
 
     return recurrence.as_poly(program.variables)
 
