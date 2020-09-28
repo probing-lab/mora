@@ -35,7 +35,7 @@ def core(program: Program, goal_monomials: List[Expr] = None, goal_power: int = 
     solutions = {}
     for m in goal_monomials:
         solutions[m] = get_solution(program, m)
-    return solution_store
+    return solutions
 
 
 def get_solution(program: Program, monomial: Poly):
@@ -65,7 +65,6 @@ def compute_solution(program: Program, monomial: Poly):
     inhom_part = recurrence - (recurr_coeff * monomial)
     inhom_part_solution = get_inhom_part_solution(program, inhom_part)
     initial_value = get_expected_initial_value(program, monomial)
-    print(f"Computing solution for { monomial.as_expr() }")
     solution = compute_solution_for_recurrence(recurr_coeff, inhom_part_solution, initial_value)
     print(f"Found solution for { monomial.as_expr() }")
     return factor * solution
@@ -83,7 +82,7 @@ def get_inhom_part_solution(program: Program, inhom_part: Poly):
         solution = get_solution(program, monomial)
         monomial = monomial.as_expr()
         replacements[monomial] = solution
-    return inhom_part.subs(replacements)
+    return inhom_part.xreplace(replacements)
 
 
 def get_expected_initial_value(program: Program, monomial: Poly):
@@ -186,7 +185,7 @@ def split_expression_on_variable(program: Program, expression, variable):
 
     branches = []
     for b, p in program.updates[variable].branches:
-        branches.append((expression.subs({variable: b}), p))
+        branches.append((expression.xreplace({variable: b}), p))
     return branches
 
 
@@ -205,5 +204,5 @@ def replace_rvs_in_polynomial(program: Program, polynomial: Poly):
                 rv = program.updates[variable].random_var
                 moment = rv.compute_moment(power)
                 replacements[variable ** power] = moment
-    polynomial = polynomial.as_expr().subs(replacements).as_poly(program.variables)
+    polynomial = polynomial.as_expr().xreplace(replacements).as_poly(program.variables)
     return polynomial
