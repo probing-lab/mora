@@ -31,6 +31,8 @@ class Update:
                 else:
                     exp, prob = update, 1-sum([b[1] for b in self.branches])
                 prob = sympify(prob)
+                if prob.is_Float:
+                    prob = Rational(str(prob))
                 if not prob.is_zero:
                     self.branches.append((sympify(exp), prob))
             if sum([b[1] for b in self.branches]) != 1:

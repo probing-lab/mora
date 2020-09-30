@@ -145,7 +145,9 @@ def compute_recurrence(program: Program, monomial: Poly):
         monoms = get_monoms(recurrence)
         new_recurrence = recurrence.coeff_monomial(1)
         for monomial in monoms:
-            new_recurrence += recurrence.coeff_monomial(monomial.as_expr()) * get_recurrence(program, monomial.as_poly(program.variables)).as_expr()
+            coeff = recurrence.coeff_monomial(monomial.as_expr())
+            monomial_recurr = get_recurrence(program, monomial.as_poly(program.variables)).as_expr()
+            new_recurrence += coeff * monomial_recurr
         recurrence = new_recurrence
 
     return recurrence.as_poly(program.variables)
@@ -166,6 +168,7 @@ def resolve_dependent_variables(program: Program, monomial: Poly):
             continue
         branches = split_expression_on_variable(program, result, variable)
         result = sum([prob * branch for branch, prob in branches])
+        result = simplify(result)
         last_variable = variable
         if variable in monom_variables:
             monom_variables.remove(variable)
