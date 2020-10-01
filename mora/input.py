@@ -4,7 +4,7 @@ This file contains the parser which parses source-files containing prob-solvable
 converts them into a format which can be further used by the program.
 """
 
-from diofant import symbols
+from diofant import symbols, Symbol
 from .utils import *
 from .core import Program
 import os
@@ -37,6 +37,7 @@ class InputParser:
         visitor.visit(tree)
         self.__set_unknown_initializations()
         self.__set_finite_value_rvs()
+        self.__set_dependencies()
         return self.__program
 
     def __set_finite_value_rvs(self):
@@ -51,6 +52,13 @@ class InputParser:
                 if all_branches_constant:
                     update.is_random_var = True
                     update.random_var = RandomVar("finite", update.branches)
+
+    def __set_dependencies(self):
+        ancestors = self.__program.ancestors
+        variables = self.__program.variables
+        for variable in variables:
+            dependencies = {v for v in variables if ancestors[variable] & ancestors[v]}
+            self.__program.dependencies[variable] = dependencies
 
     def __set_unknown_initializations(self):
         for v in self.__program.variables:
@@ -78,3 +86,21 @@ class UpdateProgramVisitor(Visitor):
         self.forbidden_variables.union(
             self.program.updates[variable].update_term(variable, 1).free_symbols
         ).difference(self.program.variables)
+        self.__set_ancestors_for_variable(variable)
+
+    def __set_ancestors_for_variable(self, variable: Symbol):
+        if self.program.updates[variable].is_random_var:
+            self.program.ancestors[variable] = {variable}
+            return
+
+        parents = set()
+        for branch in self.program.updates[variable].branches:
+            parents = parents.union(branch[0].free_symbols)
+        parents = parents.intersection(self.program.variables)
+        parents.discard(variable)
+
+        ancestors = {variable}
+        for parent in parents:
+            ancestors = ancestors.union(self.program.ancestors[parent])
+
+        self.program.ancestors[variable] = ancestors

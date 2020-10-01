@@ -1,6 +1,6 @@
 from diofant import Symbol, sympify, simplify, Expr, Poly, Function, symbols, rsolve
 from mora.utils import Update, monomial_is_constant, get_monoms
-from typing import List, Dict
+from typing import List, Dict, Set
 
 
 class Program:
@@ -10,7 +10,8 @@ class Program:
         self.variables: List[Symbol] = []
         self.initial_values: Dict[Symbol, Update] = {}
         self.updates: Dict[Symbol, Update] = {}
-        self.goals: List[int] = []
+        self.ancestors: Dict[Symbol, Set[Symbol]] = {}
+        self.dependencies: Dict[Symbol, Set[Symbol]] = {}
 
 
 # Stores the solutions of E-variables
