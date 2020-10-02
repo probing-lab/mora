@@ -1,4 +1,6 @@
-from diofant import sympify, Rational, Poly, prod
+from typing import Iterable
+
+from diofant import sympify, Rational, Poly, prod, Symbol
 from scipy.stats import norm
 from math import sqrt
 import re
@@ -119,3 +121,20 @@ def monomial_is_constant(monomial: Poly):
         return True
     powers = monomial.monoms()[0]
     return all(p == 0 for p in powers)
+
+
+def is_independent_from(program, v1: Symbol, v2: Symbol):
+    """
+    Returns true iff the two passed variables are stochastically independent
+    """
+    return v1 not in program.dependencies[v2]
+
+
+def is_independent_from_all(program, v1: Symbol, vs: Iterable[Symbol]):
+    """
+    Returns true iff the first argument is stochastically independent from all variables given by the second argument
+    """
+    for v in vs:
+        if not is_independent_from(program, v1, v):
+            return False
+    return True

@@ -1,6 +1,6 @@
 from diofant import Symbol, sympify, simplify, Expr, Poly, Function, symbols, rsolve
-from mora.utils import Update, monomial_is_constant, get_monoms
-from typing import List, Dict, Set
+from mora.utils import Update, monomial_is_constant, get_monoms, is_independent_from_all
+from typing import List, Dict, Set, Iterable
 
 
 class Program:
@@ -134,7 +134,7 @@ def get_recurrence(program: Program, monomial: Poly):
 def compute_recurrence(program: Program, monomial: Poly):
     """
     Computes the recurrence of a given monomial by splitting all variables which are dependent with the monomial
-    and substitute the recurrence for variables/monomials which are independent
+    and substitute the solution for variables/monomials which are independent
     """
     recurrence, last_variable = resolve_dependent_variables(program, monomial)
     recurrence = recurrence.as_poly(program.variables)
@@ -147,8 +147,8 @@ def compute_recurrence(program: Program, monomial: Poly):
         new_recurrence = recurrence.coeff_monomial(1)
         for monomial in monoms:
             coeff = recurrence.coeff_monomial(monomial.as_expr())
-            monomial_recurr = get_recurrence(program, monomial.as_poly(program.variables)).as_expr()
-            new_recurrence += coeff * monomial_recurr
+            monomial_solution = get_solution(program, monomial.as_poly(program.variables))
+            new_recurrence += coeff * monomial_solution
         recurrence = new_recurrence
 
     return recurrence.as_poly(program.variables)
@@ -170,6 +170,28 @@ def resolve_dependent_variables(program: Program, monomial: Poly):
         branches = split_expression_on_variable(program, result, variable)
         result = sum([prob * branch for branch, prob in branches])
         result = simplify(result)
+
+        # TODO: Only simplify for current variable at beginning
+        # TODO: refactor - make nice
+        result = result.as_poly(program.variables)
+        monoms = get_monoms(result)
+        new_result = result.coeff_monomial(1)
+        for monom in monoms:
+            monom_r = sympify(1)
+            powers = monom.monoms()[0]
+            vars_with_powers = [(var, power) for var, power in zip(monom.gens, powers) if power > 0]
+            vars = {v for v, _ in vars_with_powers}
+            for v, p in vars_with_powers:
+                vars.discard(v)
+                if is_independent_from_all(program, v, vars):
+                    rep = get_solution(program, (v**p).as_poly(program.variables))
+                else:
+                    rep = v ** p
+                vars.add(v)
+                monom_r *= rep
+            new_result += result.coeff_monomial(monomial.as_expr()) * monom_r
+        result = new_result.as_expr()
+
         last_variable = variable
         if variable in monom_variables:
             monom_variables.remove(variable)
