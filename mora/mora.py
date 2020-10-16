@@ -18,7 +18,9 @@ def mora(source: str, goal: int = 1, output_format: str = ""):
         print("Finished parsing")
 
         start = timer()
+
         invariants = core(program, None, goal)
+        #invariants = core(program, [symbols('z')], goal)
         time = timer() - start
         out = output_results(program, invariants, time, output_format)
         return out

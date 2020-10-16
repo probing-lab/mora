@@ -113,6 +113,7 @@ def compute_solution_for_recurrence(recurr_coeff: Expr, inhom_part_solution: Exp
     n = symbols('n')
     if recurr_coeff.is_zero:
         return simplify(inhom_part_solution.xreplace({n: n-1}))
+    inhom_part_solution = simplify(inhom_part_solution)
     solution = rsolve(f(n + 1) - recurr_coeff * f(n) - inhom_part_solution, f(n), init={f(0): initial_value})
     solution = solution[0][f](n)
     return solution
@@ -142,13 +143,14 @@ def compute_recurrence(program: Program, monomial: Poly):
     remaining_variables = program.variables[0:program.variables.index(last_variable)]
 
     if remaining_variables:
+        n = symbols('n')
         recurrence = recurrence.as_poly(remaining_variables)
         monoms = get_monoms(recurrence)
         new_recurrence = recurrence.coeff_monomial(1)
         for monomial in monoms:
             coeff = recurrence.coeff_monomial(monomial.as_expr())
             monomial_solution = get_solution(program, monomial.as_poly(program.variables))
-            new_recurrence += coeff * monomial_solution
+            new_recurrence += coeff * monomial_solution.xreplace({n: n + 1})
         recurrence = new_recurrence
 
     return recurrence.as_poly(program.variables)
@@ -161,36 +163,20 @@ def resolve_dependent_variables(program: Program, monomial: Poly):
     result = monomial.as_expr()
     powers = monomial.monoms()[0]
     monom_variables = set([var for var, power in zip(monomial.gens, powers) if power > 0])
+    force_next_split = len(monom_variables) == 1
     last_variable = None
     for variable, update in reversed(program.updates.items()):
         if update.is_random_var:
             continue
         if variable not in result.free_symbols:
             continue
+        if not force_next_split:
+            result = presolve_independent_occurences(program, variable, result)
+        else:
+            force_next_split = False
         branches = split_expression_on_variable(program, result, variable)
         result = sum([prob * branch for branch, prob in branches])
         result = simplify(result)
-
-        # TODO: Only simplify for current variable at beginning
-        # TODO: refactor - make nice
-        result = result.as_poly(program.variables)
-        monoms = get_monoms(result)
-        new_result = result.coeff_monomial(1)
-        for monom in monoms:
-            monom_r = sympify(1)
-            powers = monom.monoms()[0]
-            vars_with_powers = [(var, power) for var, power in zip(monom.gens, powers) if power > 0]
-            vars = {v for v, _ in vars_with_powers}
-            for v, p in vars_with_powers:
-                vars.discard(v)
-                if is_independent_from_all(program, v, vars):
-                    rep = get_solution(program, (v**p).as_poly(program.variables))
-                else:
-                    rep = v ** p
-                vars.add(v)
-                monom_r *= rep
-            new_result += result.coeff_monomial(monomial.as_expr()) * monom_r
-        result = new_result.as_expr()
 
         last_variable = variable
         if variable in monom_variables:
@@ -212,6 +198,31 @@ def split_expression_on_variable(program: Program, expression, variable):
     for b, p in program.updates[variable].branches:
         branches.append((expression.xreplace({variable: b}), p))
     return branches
+
+
+def presolve_independent_occurences(program, variable, result):
+    n = symbols('n')
+    result = result.as_poly(program.variables)
+    new_result = result.coeff_monomial(1)
+    monoms = get_monoms(result)
+    for monom in monoms:
+        powers = monom.monoms()[0]
+        powers_for_var = {var: power for var, power in zip(monom.gens, powers) if power > 0}
+        other_vars = {v for v in powers_for_var.keys() if v != variable}
+
+        if variable not in powers_for_var.keys():
+            new_result += result.coeff_monomial(monom.as_expr()) * monom.as_expr()
+            continue
+
+        if not is_independent_from_all(program, variable, other_vars):
+            new_result += result.coeff_monomial(monom.as_expr()) * monom.as_expr()
+            continue
+
+        m = variable ** powers_for_var[variable]
+        independent_solution = get_solution(program, m.as_poly(program.variables)).xreplace({n: n+1})
+        new_result += result.coeff_monomial(monom.as_expr()) * monom.as_expr().xreplace({m: independent_solution})
+
+    return new_result.as_poly(program.variables)
 
 
 def replace_rvs_in_polynomial(program: Program, polynomial: Poly):
