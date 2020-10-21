@@ -1,0 +1,6 @@
+
+x = 0
+c = 1
+while true:
+    c = c @ p; 0
+    x = x + c

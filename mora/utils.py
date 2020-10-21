@@ -5,6 +5,10 @@ from scipy.stats import norm
 from math import sqrt
 import re
 
+LOG_NOTHING = 0
+LOG_ESSENTIAL = 10
+LOG_VERBOSE = 20
+LOG_LEVEL = LOG_ESSENTIAL
 
 class Update:
     # parse updates
@@ -138,3 +142,31 @@ def is_independent_from_all(program, v1: Symbol, vs: Iterable[Symbol]):
         if not is_independent_from(program, v1, v):
             return False
     return True
+
+
+def get_powers_of_variable_in_polynomial(variable: Symbol, polynomial: Poly):
+    """
+    Returns the set of all powers p for which variable ** p occurs in the polynomial
+    """
+    monoms = get_monoms(polynomial)
+    all_powers = []
+    for monomial in monoms:
+        powers = monomial.monoms()[0]
+        powers_for_var = {var: power for var, power in zip(monomial.gens, powers) if power > 0}
+        if variable in powers_for_var.keys():
+            all_powers.append(powers_for_var[variable])
+    all_powers.sort(reverse=True)
+    return all_powers
+
+
+def set_log_level(log_level):
+    global LOG_LEVEL
+    LOG_LEVEL = log_level
+
+
+def log(message, level):
+    """
+    Logs a message depending on the log level
+    """
+    if level <= LOG_LEVEL:
+        print(message)
