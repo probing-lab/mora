@@ -1,6 +1,6 @@
 from typing import Iterable
 
-from diofant import sympify, Rational, Poly, prod, Symbol
+from diofant import sympify, Rational, Poly, prod, Symbol, symbols
 from scipy.stats import norm
 from math import sqrt
 import re
@@ -14,7 +14,7 @@ class Update:
     # parse updates
     # takes string "x = P @ p; Q @ q" or x = RV(d, a, b)
     # creates class to deal with substituing powers of variables and moments
-    def __init__(self, var, update_string, is_random_var=False, random_var=None):
+    def __init__(self, var, update_string, program_variables=None, is_random_var=False, random_var=None):
         self.is_random_var = is_random_var
         self.random_var = random_var
         self.var = var
@@ -40,6 +40,8 @@ class Update:
                 if prob.is_Float:
                     prob = Rational(str(prob))
                 if not prob.is_zero:
+                    exp = make_symbols_positive(sympify(exp), program_variables)
+                    prob = make_symbols_positive(prob, program_variables)
                     self.branches.append((sympify(exp), prob))
             if sum([b[1] for b in self.branches]) != 1:
                 raise Exception(f"Branch probabilities for {self.var} update do not sum up to 1. Terminating.")
@@ -183,3 +185,17 @@ def without_piecewise(expr):
         return without_piecewise(expr.args[-1].expr)
 
     return expr.func(*[without_piecewise(a) for a in expr.args])
+
+
+def make_symbols_positive(expr, exclude_symbols=None):
+    """
+    Ensures that all symbols in a given expression (with the exception of excluded symbols) are assumed to be positive
+    """
+    if expr.is_Symbol:
+        if exclude_symbols is None or expr not in exclude_symbols:
+            return symbols(expr.name, positive=True)
+
+    if not expr.args:
+        return expr
+
+    return expr.func(*[make_symbols_positive(a, exclude_symbols) for a in expr.args])

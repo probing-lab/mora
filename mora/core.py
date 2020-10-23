@@ -1,7 +1,7 @@
-from diofant import Symbol, sympify, simplify, expand, Expr, Poly, Function, symbols, rsolve, Sum
+from diofant import Symbol, sympify, simplify, expand, Expr, Poly, symbols, summation
 from mora.utils import Update, monomial_is_constant, get_monoms, is_independent_from_all, \
     get_powers_of_variable_in_polynomial, log, LOG_VERBOSE, LOG_ESSENTIAL, without_piecewise
-from typing import List, Dict, Set, Iterable
+from typing import List, Dict, Set
 
 
 class Program:
@@ -116,14 +116,14 @@ def compute_solution_for_recurrence(recurr_coeff: Expr, inhom_part_solution: Exp
     f(0) = initial_value; f(n+1) = recurr_coeff * f(n) + inhom_part_solution
     """
     log(f"Start compute solution for recurrence, { recurr_coeff }, { inhom_part_solution }, { initial_value }", LOG_VERBOSE)
-    n = symbols('n', integer=True)
+    n = symbols('n', integer=True, positive=True)
     if recurr_coeff.is_zero:
         return expand(inhom_part_solution.xreplace({n: n-1}))
 
     hom_solution = (recurr_coeff ** n) * initial_value
-    k = symbols('_k', integer=True)
+    k = symbols('_k', integer=True, positive=True)
     summand = simplify((recurr_coeff ** k) * inhom_part_solution.xreplace({n: (n-1) - k}))
-    particular_solution = Sum(summand, (k, 0, (n-1))).doit()
+    particular_solution = summation(summand, (k, 0, (n-1)))
     particular_solution = without_piecewise(particular_solution)
     solution = simplify(hom_solution + particular_solution)
     log(f"End compute solution for recurrence, { recurr_coeff }, { inhom_part_solution }, { initial_value }", LOG_VERBOSE)
@@ -155,7 +155,7 @@ def compute_recurrence(program: Program, monomial: Poly):
     recurrence = recurrence.as_poly(program.variables)
 
     if remaining_split_variables:
-        n = symbols('n', integer=True)
+        n = symbols('n', integer=True, positive=True)
         recurrence = recurrence.as_poly(remaining_split_variables)
         monoms = get_monoms(recurrence)
         new_recurrence = recurrence.coeff_monomial(1)
@@ -233,7 +233,7 @@ def split_expression_on_variable(program: Program, expression, variable):
 
 def presolve_independent_occurences(program, split_variables, result):
     log(f"Start presolve independent occurrences", LOG_VERBOSE)
-    n = symbols('n', integer=True)
+    n = symbols('n', integer=True, positive=True)
     result = result.as_poly(program.variables)
     new_result = result.coeff_monomial(1)
     monoms = get_monoms(result)

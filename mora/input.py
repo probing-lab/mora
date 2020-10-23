@@ -82,7 +82,7 @@ class UpdateProgramVisitor(Visitor):
             raise Exception("Program is not prob-solvable. Circular variable dependencies.")
         expression = str(tree.children[1])
         self.program.variables.append(variable)
-        self.program.updates[variable] = Update(variable, expression)
+        self.program.updates[variable] = Update(variable, expression, program_variables=self.program.variables)
         self.forbidden_variables.union(
             self.program.updates[variable].update_term(variable, 1).free_symbols
         ).difference(self.program.variables)
