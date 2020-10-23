@@ -10,7 +10,7 @@ from timeit import default_timer as timer
 
 
 def mora(source: str, goal: int = 1, output_format: str = ""):
-    try:
+    #try:
         log("Parsing Input", LOG_ESSENTIAL)
         parser = InputParser()
         parser.set_source(source)
@@ -23,6 +23,6 @@ def mora(source: str, goal: int = 1, output_format: str = ""):
 
         out = output_results(program, moments, time, output_format)
         return out
-    except Exception as exception:
-        print("Execution failed!")
-        print(exception)
+    #except Exception as exception:
+    #    print("Execution failed!")
+    #    print(exception)

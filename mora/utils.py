@@ -8,7 +8,7 @@ import re
 LOG_NOTHING = 0
 LOG_ESSENTIAL = 10
 LOG_VERBOSE = 20
-LOG_LEVEL = LOG_ESSENTIAL
+LOG_LEVEL = LOG_VERBOSE
 
 class Update:
     # parse updates
@@ -170,3 +170,16 @@ def log(message, level):
     """
     if level <= LOG_LEVEL:
         print(message)
+
+
+def without_piecewise(expr):
+    """
+    Removes the Piecewise from an expression by assuming that all restricting assumptions are false.
+    """
+    if not expr.args:
+        return expr
+
+    if expr.is_Piecewise:
+        return without_piecewise(expr.args[-1].expr)
+
+    return expr.func(*[without_piecewise(a) for a in expr.args])

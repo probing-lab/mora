@@ -1,6 +1,6 @@
-from diofant import Symbol, sympify, simplify, expand, Expr, Poly, Function, symbols, rsolve
+from diofant import Symbol, sympify, simplify, expand, Expr, Poly, Function, symbols, rsolve, Sum
 from mora.utils import Update, monomial_is_constant, get_monoms, is_independent_from_all, \
-    get_powers_of_variable_in_polynomial, log, LOG_VERBOSE, LOG_ESSENTIAL
+    get_powers_of_variable_in_polynomial, log, LOG_VERBOSE, LOG_ESSENTIAL, without_piecewise
 from typing import List, Dict, Set, Iterable
 
 
@@ -87,7 +87,7 @@ def get_inhom_part_solution(program: Program, inhom_part: Poly):
         monomial = monomial.as_expr()
         result += inhom_part.coeff_monomial(monomial) * solution
     log(f"End get inhom_part_solution, {inhom_part.as_expr()}", LOG_VERBOSE)
-    return result
+    return expand(result)
 
 
 def get_expected_initial_value(program: Program, monomial: Poly):
@@ -116,13 +116,16 @@ def compute_solution_for_recurrence(recurr_coeff: Expr, inhom_part_solution: Exp
     f(0) = initial_value; f(n+1) = recurr_coeff * f(n) + inhom_part_solution
     """
     log(f"Start compute solution for recurrence, { recurr_coeff }, { inhom_part_solution }, { initial_value }", LOG_VERBOSE)
-    f = Function('f')
-    n = symbols('n')
+    n = symbols('n', integer=True)
     if recurr_coeff.is_zero:
-        return simplify(inhom_part_solution.xreplace({n: n-1}))
-    inhom_part_solution = simplify(inhom_part_solution)
-    solution = rsolve(f(n + 1) - recurr_coeff * f(n) - inhom_part_solution, f(n), init={f(0): initial_value})
-    solution = solution[0][f](n)
+        return expand(inhom_part_solution.xreplace({n: n-1}))
+
+    hom_solution = (recurr_coeff ** n) * initial_value
+    k = symbols('_k', integer=True)
+    summand = simplify((recurr_coeff ** k) * inhom_part_solution.xreplace({n: (n-1) - k}))
+    particular_solution = Sum(summand, (k, 0, (n-1))).doit()
+    particular_solution = without_piecewise(particular_solution)
+    solution = simplify(hom_solution + particular_solution)
     log(f"End compute solution for recurrence, { recurr_coeff }, { inhom_part_solution }, { initial_value }", LOG_VERBOSE)
     return solution
 
@@ -152,7 +155,7 @@ def compute_recurrence(program: Program, monomial: Poly):
     recurrence = recurrence.as_poly(program.variables)
 
     if remaining_split_variables:
-        n = symbols('n')
+        n = symbols('n', integer=True)
         recurrence = recurrence.as_poly(remaining_split_variables)
         monoms = get_monoms(recurrence)
         new_recurrence = recurrence.coeff_monomial(1)
@@ -205,7 +208,8 @@ def resolve_dependent_variables(program: Program, monomial: Poly):
             monom_variables.remove(variable)
         # If all variables in the monomial have been considered only independent variables would remain, so stop.
         if not monom_variables:
-            break
+            pass
+            #break
     log(f"End resolve dependent variables, { monomial.as_expr() }", LOG_VERBOSE)
     if last_variable is not None:
         remaining_split_variables.update(program.variables[0:program.variables.index(last_variable)])
@@ -229,7 +233,7 @@ def split_expression_on_variable(program: Program, expression, variable):
 
 def presolve_independent_occurences(program, split_variables, result):
     log(f"Start presolve independent occurrences", LOG_VERBOSE)
-    n = symbols('n')
+    n = symbols('n', integer=True)
     result = result.as_poly(program.variables)
     new_result = result.coeff_monomial(1)
     monoms = get_monoms(result)
