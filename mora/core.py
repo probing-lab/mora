@@ -147,40 +147,11 @@ def get_recurrence(program: Program, monomial: Poly):
 
 def compute_recurrence(program: Program, monomial: Poly):
     """
-    Computes the recurrence of a given monomial by splitting all variables which are dependent with the monomial
-    and substitute the solution for variables/monomials which are independent
-    """
-    log(f"Start compute recurrence, { monomial.as_expr() }", LOG_VERBOSE)
-    recurrence, remaining_split_variables = resolve_dependent_variables(program, monomial)
-    recurrence = recurrence.as_poly(program.variables)
-
-    if remaining_split_variables:
-        n = symbols('n', integer=True, positive=True)
-        recurrence = recurrence.as_poly(remaining_split_variables)
-        monoms = get_monoms(recurrence)
-        new_recurrence = recurrence.coeff_monomial(1)
-        for monomial in monoms:
-            coeff = recurrence.coeff_monomial(monomial.as_expr())
-            monomial_solution = get_solution(program, monomial.as_poly(program.variables))
-            new_recurrence += coeff * monomial_solution.xreplace({n: n + 1})
-        recurrence = new_recurrence
-
-    log(f"End compute recurrence, { monomial.as_expr() }", LOG_VERBOSE)
-    return recurrence.as_poly(program.variables)
-
-
-def resolve_dependent_variables(program: Program, monomial: Poly):
-    """
     Iteratively splits a monomial on variables which are dependent with respect to the given monomial
     """
-    log(f"Start resolve dependent variables, { monomial.as_expr() }", LOG_VERBOSE)
+    log(f"Start compute recurrence, { monomial.as_expr() }", LOG_VERBOSE)
     result = monomial.as_expr()
-    powers = monomial.monoms()[0]
-    monom_variables = set([var for var, power in zip(monomial.gens, powers) if power > 0])
-    suppress_next_presolve = len(monom_variables) == 1
     split_variables = set()
-    remaining_split_variables = set()
-    last_variable = None
     for variable, update in reversed(program.updates.items()):
         if variable not in result.free_symbols:
             continue
@@ -189,12 +160,6 @@ def resolve_dependent_variables(program: Program, monomial: Poly):
             result = replace_rv_in_polynomial(program, result.as_poly(program.variables), variable).as_expr()
             continue
 
-        if not suppress_next_presolve:
-            pass
-            #result = presolve_independent_occurences(program, split_variables, result)
-        else:
-            suppress_next_presolve = False
-
         split_variables.add(variable)
         branches = split_expression_on_variable(program, result, variable)
         log(f"Start combining {len(branches)} branches", LOG_VERBOSE)
@@ -202,18 +167,10 @@ def resolve_dependent_variables(program: Program, monomial: Poly):
         log(f"Mid combining branches", LOG_VERBOSE)
         result = expand(result)
         log(f"End combining branches", LOG_VERBOSE)
+        # result = presolve_independent_occurences(program, split_variables, result)
 
-        last_variable = variable
-        if variable in monom_variables:
-            monom_variables.remove(variable)
-        # If all variables in the monomial have been considered only independent variables would remain, so stop.
-        if not monom_variables:
-            pass
-            #break
-    log(f"End resolve dependent variables, { monomial.as_expr() }", LOG_VERBOSE)
-    if last_variable is not None:
-        remaining_split_variables.update(program.variables[0:program.variables.index(last_variable)])
-    return result, remaining_split_variables
+    log(f"End compute recurrence, { monomial.as_expr() }", LOG_VERBOSE)
+    return result.as_poly(program.variables)
 
 
 def split_expression_on_variable(program: Program, expression, variable):
@@ -232,6 +189,7 @@ def split_expression_on_variable(program: Program, expression, variable):
 
 
 def presolve_independent_occurences(program, split_variables, result):
+    # TODO
     log(f"Start presolve independent occurrences", LOG_VERBOSE)
     n = symbols('n', integer=True, positive=True)
     result = result.as_poly(program.variables)
