@@ -1,6 +1,5 @@
 from diofant import Symbol, sympify, simplify, expand, Expr, Poly, symbols, summation
-from mora.utils import Update, monomial_is_constant, get_monoms, is_independent_from_all, \
-    get_powers_of_variable_in_polynomial, log, LOG_VERBOSE, LOG_ESSENTIAL, without_piecewise
+from mora.utils import *
 from typing import List, Dict, Set
 
 
@@ -167,7 +166,7 @@ def compute_recurrence(program: Program, monomial: Poly):
         log(f"Mid combining branches", LOG_VERBOSE)
         result = expand(result)
         log(f"End combining branches", LOG_VERBOSE)
-        # result = presolve_independent_occurences(program, split_variables, result)
+        result = presolve_independent_occurences(program, split_variables, result)
 
     log(f"End compute recurrence, { monomial.as_expr() }", LOG_VERBOSE)
     return result.as_poly(program.variables)
@@ -189,29 +188,30 @@ def split_expression_on_variable(program: Program, expression, variable):
 
 
 def presolve_independent_occurences(program, split_variables, result):
-    # TODO
+    """
+    result is a polynomial in the program variables. All variables with the exception of split_variables are sub (n+1).
+    The variables in split-variables are sub n.
+    The function goes through every monomial M = A_n*B_{n+1} where A is a product of vars in split_variables and B
+    a product of vars not in split_variables. The function checks if B_{n+1} is statistically independent from A_n
+    and substitutes the solution for B_{n+1} if so.
+    """
     log(f"Start presolve independent occurrences", LOG_VERBOSE)
     n = symbols('n', integer=True, positive=True)
     result = result.as_poly(program.variables)
     new_result = result.coeff_monomial(1)
     monoms = get_monoms(result)
     for monom in monoms:
-        replacements = {}
         powers = monom.monoms()[0]
-        var_powers = [(var, power) for var, power in zip(monom.gens, powers) if power > 0 and var not in split_variables]
-        other_variables = {v for v, _ in var_powers}
-
-        for var, power in var_powers:
-            other_variables.discard(var)
-            if is_independent_from_all(program, var, other_variables):
-                m = (var ** power).as_poly(program.variables)
-                replacements[var ** power] = get_solution(program, m).xreplace({n: n+1})
-            other_variables.add(var)
-
-        new_result += result.coeff_monomial(monom.as_expr()) * expand(monom.as_expr().subs(replacements))
-
-    log(f"End presolve independent occurrences", LOG_VERBOSE)
-    return expand(new_result)
+        a = {var: power for var, power in zip(monom.gens, powers) if power > 0 and var in split_variables}
+        b = {var: power for var, power in zip(monom.gens, powers) if power > 0 and var not in split_variables}
+        if len(b.keys()) > 0 and all_are_independent_from_all(program, b, a):
+            b_monom = prod(v ** p for v, p in b.items()).as_poly(program.variables)
+            rec_solution = get_solution(program, b_monom).xreplace({n: n+1})
+            a_monom = prod(v ** p for v, p in a.items())
+            new_result += result.coeff_monomial(monom.as_expr()) * a_monom * rec_solution
+        else:
+            new_result += result.coeff_monomial(monom.as_expr()) * monom.as_expr()
+    return simplify(new_result)
 
 
 def replace_rv_in_polynomial(program: Program, polynomial: Poly, rv: Symbol):

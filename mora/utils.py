@@ -8,7 +8,7 @@ import re
 LOG_NOTHING = 0
 LOG_ESSENTIAL = 10
 LOG_VERBOSE = 20
-LOG_LEVEL = LOG_VERBOSE
+LOG_LEVEL = LOG_ESSENTIAL
 
 class Update:
     # parse updates
@@ -129,19 +129,28 @@ def monomial_is_constant(monomial: Poly):
     return all(p == 0 for p in powers)
 
 
-def is_independent_from(program, v1: Symbol, v2: Symbol):
+def is_independent_from_all(program, x, ys):
     """
-    Returns true iff the two passed variables are stochastically independent
+    Returns true iff x is statistially independent from all ys, where x is from the current iteration and the ys
+    are from the previous iteration.
     """
-    return v1 not in program.dependencies[v2]
+    if x not in program.ancestors[x]:
+        return True
+
+    for y in ys:
+        if y in program.dependencies[x]:
+            return False
+
+    return True
 
 
-def is_independent_from_all(program, v1: Symbol, vs: Iterable[Symbol]):
+def all_are_independent_from_all(program, xs, ys):
     """
-    Returns true iff the first argument is stochastically independent from all variables given by the second argument
+    Returns true iff all xs are statistially independent from all ys, where the xs are from the current iteration
+    and the ys are from the previous iteration.
     """
-    for v in vs:
-        if not is_independent_from(program, v1, v):
+    for x in xs:
+        if not is_independent_from_all(program, x, ys):
             return False
     return True
 

@@ -90,17 +90,17 @@ class UpdateProgramVisitor(Visitor):
 
     def __set_ancestors_for_variable(self, variable: Symbol):
         if self.program.updates[variable].is_random_var:
-            self.program.ancestors[variable] = {variable}
+            self.program.ancestors[variable] = set()
             return
 
         parents = set()
         for branch in self.program.updates[variable].branches:
             parents = parents.union(branch[0].free_symbols)
         parents = parents.intersection(self.program.variables)
-        parents.discard(variable)
 
-        ancestors = {variable}
+        ancestors = parents.copy()
         for parent in parents:
-            ancestors = ancestors.union(self.program.ancestors[parent])
+            if parent != variable:
+                ancestors = ancestors.union(self.program.ancestors[parent])
 
         self.program.ancestors[variable] = ancestors
