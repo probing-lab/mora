@@ -1,20 +1,20 @@
 # Installation
 
 Mora needs to following dependencies:
-- Python version &geq; 3.5 and pip
+- Python version &geq; 3.8 and pip
 - scipy
 - diofant
 - lark-parser
 
 To install these you can do the following steps.
 
-1. Make sure you have python (version &geq; 3.5) and pip installed on your system.
+1. Make sure you have python (version &geq; 3.8) and pip installed on your system.
 Otherwise install it in your preferred way.
 
 2. Clone the repository:
 
 ```shell script
-git clone git@github.com:miroslav21/mora.git
+git clone git@github.com:probing-lab/mora.git
 cd mora
 ```
 
@@ -54,6 +54,12 @@ python ./run.py --benchmarks <list of files/file pattern> --goal <list of goals>
 A more extensive help can be obtained by:
 ```shell script
 python ./run.py --help
+```
+
+# Run Tests
+Automatic tests can be run with
+```shell script
+python -m unittest
 ```
 
 # Writing your own Prob-solvable program
