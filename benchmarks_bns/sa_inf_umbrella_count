@@ -1,0 +1,11 @@
+
+R = 1
+Count = 0
+while true:
+    R_1 = R @ 7/10; 0
+    R_0 = (1-R) @ 3/10; 0
+    R = R_1 + R_0
+    U_1 = R @ 9/10; 0
+    U_0 = (1-R) @ 2/10; 0
+    U = U_1 + U_0
+    Count = Count + U
