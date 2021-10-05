@@ -32,7 +32,7 @@ source .venv/bin/activate
 5. Install the required dependencies with pip:
 ```shell script
 pip install scipy
-pip install diofant
+pip install diofant==0.11
 pip install lark-parser
 ```
 
