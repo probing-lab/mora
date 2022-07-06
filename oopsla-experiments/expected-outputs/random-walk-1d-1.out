@@ -1,0 +1,12 @@
+setting goal:  1
+ --- MBRecs --- 
+    x  =  x
+
+ Solving for x^1  with initial condition x^1(0) = 0
+    x^1(n)    ->  0
+ Solution found
+   x^1  =  0
+
+Moment based invariants for program random-walk-1d, with invariants over [x]:
+ E[x^1] = 0
+Computation time 0.07179724799971154s.

@@ -1,0 +1,12 @@
+setting goal:  1
+ --- MBRecs --- 
+    x  =  p + x
+
+ Solving for x^1  with initial condition x^1(0) = 0
+    x^1(n)    ->  n*p
+ Solution found
+   x^1  =  n*p
+
+Moment based invariants for program binomial, with invariants over [x]:
+ E[x^1] = n*p
+Computation time 0.12391424499946879s.

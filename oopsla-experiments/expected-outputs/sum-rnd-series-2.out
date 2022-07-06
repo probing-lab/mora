@@ -1,0 +1,36 @@
+setting goal:  2
+ --- MBRecs --- 
+    n**2  =  n**2 + 2*n + 1
+    n  =  n + 1
+    x**2  =  n**2/2 + n*x + n + x**2 + x + 1/2
+    x  =  n/2 + x + 1/2
+    n*x  =  n**2/2 + n*x + n + x + 1/2
+
+ Solving for n^2  with initial condition n^2(0) = 0
+ Solving for n^1  with initial condition n^1(0) = 0
+    n^1(n)    ->  n
+    n^2(n)    ->  n**2
+ Solution found
+   n^2  =  n**2
+ Solution found
+   n^1  =  n
+ Solving for x^2  with initial condition x^2(0) = 0
+ Solving for x^1n^1  with initial condition x^1n^1(0) = 0
+ Solving for x^1  with initial condition x^1(0) = 0
+    x^1(n)    ->  n*(n + 1)/4
+    x^1n^1(n)    ->  n**2*(n + 1)/4
+    x^2(n)    ->  n*(3*n**3 + 10*n**2 + 9*n + 2)/48
+ Solution found
+   x^2  =  n*(3*n**3 + 10*n**2 + 9*n + 2)/48
+ Solution found
+   x^1  =  n*(n + 1)/4
+ Solution found
+   x^1n^1  =  n**2*(n + 1)/4
+
+Moment based invariants for program sum-rnd-series, with invariants over [n**2, x**2]:
+ E[n^1] = n
+ E[n^2] = n**2
+ E[x^1] = n*(n + 1)/4
+ E[x^1n^1] = n**2*(n + 1)/4
+ E[x^2] = n*(3*n**3 + 10*n**2 + 9*n + 2)/48
+Computation time 1.0416090460003034s.

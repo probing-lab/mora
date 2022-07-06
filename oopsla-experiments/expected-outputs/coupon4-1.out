@@ -1,0 +1,42 @@
+setting goal:  1
+ --- MBRecs --- 
+    g  =  1/2
+    f  =  1/2
+    b  =  3*b/4 + 1/4
+    d  =  3*d/4 + 1/4
+    a  =  3*a/4 + 1/4
+    c  =  3*c/4 + 1/4
+
+ Solving for g^1  with initial condition g^1(0) = 0
+    g^1(n)    ->  1/2
+ Solution found
+   g^1  =  1/2
+ Solving for f^1  with initial condition f^1(0) = 0
+    f^1(n)    ->  1/2
+ Solution found
+   f^1  =  1/2
+ Solving for b^1  with initial condition b^1(0) = 0
+    b^1(n)    ->  -(3/4)**n + 1
+ Solution found
+   b^1  =  -(3/4)**n + 1
+ Solving for d^1  with initial condition d^1(0) = 0
+    d^1(n)    ->  -(3/4)**n + 1
+ Solution found
+   d^1  =  -(3/4)**n + 1
+ Solving for a^1  with initial condition a^1(0) = 0
+    a^1(n)    ->  -(3/4)**n + 1
+ Solution found
+   a^1  =  -(3/4)**n + 1
+ Solving for c^1  with initial condition c^1(0) = 0
+    c^1(n)    ->  -(3/4)**n + 1
+ Solution found
+   c^1  =  -(3/4)**n + 1
+
+Moment based invariants for program coupon4, with invariants over [g, f, b, d, a, c]:
+ E[g^1] = 1/2
+ E[f^1] = 1/2
+ E[b^1] = -3**n*4**(-n) + 1
+ E[d^1] = -3**n*4**(-n) + 1
+ E[a^1] = -3**n*4**(-n) + 1
+ E[c^1] = -3**n*4**(-n) + 1
+Computation time 0.7423772279998957s.

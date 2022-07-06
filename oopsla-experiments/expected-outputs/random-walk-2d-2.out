@@ -1,0 +1,24 @@
+setting goal:  2
+ --- MBRecs --- 
+    h**2  =  1/2
+    x**2  =  x**2 + 1/2
+    y**2  =  y**2 + 1/2
+
+ Solving for h^2  with initial condition h^2(0) = 0
+    h^2(n)    ->  1/2
+ Solution found
+   h^2  =  1/2
+ Solving for x^2  with initial condition x^2(0) = 0
+    x^2(n)    ->  n/2
+ Solution found
+   x^2  =  n/2
+ Solving for y^2  with initial condition y^2(0) = 0
+    y^2(n)    ->  n/2
+ Solution found
+   y^2  =  n/2
+
+Moment based invariants for program random-walk-2d, with invariants over [h**2, x**2, y**2]:
+ E[h^2] = 1/2
+ E[x^2] = n/2
+ E[y^2] = n/2
+Computation time 0.2001849520001997s.

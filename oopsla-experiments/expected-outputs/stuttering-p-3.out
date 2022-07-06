@@ -1,0 +1,84 @@
+setting goal:  3
+ --- MBRecs --- 
+    y**3  =  6*p*y**2 + 16*p*y + 16*p + y**3
+    y**2  =  4*p*y + 16*p/3 + y**2
+    x**3  =  3*p*x**2 + 4*p*x + 2*p + x**3
+    y  =  2*p + y
+    u1**3  =  2
+    x  =  p + x
+    u2**3  =  16
+    f**3  =  p
+    s**3  =  9*p*x**2 + 18*p*x*y + 32*p*x + 9*p*y**2 + 32*p*y + 42*p + x**3 + 3*x**2*y + 3*x*y**2 + y**3
+    x**2  =  2*p*x + 4*p/3 + x**2
+    x*y**2  =  4*p*x*y + 16*p*x/3 + p*y**2 + 4*p*y + 16*p/3 + x*y**2
+    x**2*y  =  2*p*x**2 + 2*p*x*y + 4*p*x + 4*p*y/3 + 8*p/3 + x**2*y
+    x*y  =  2*p*x + p*y + 2*p + x*y
+
+ Solving for y^3  with initial condition y^3(0) = 1
+ Solving for y^2  with initial condition y^2(0) = 1
+ Solving for y^1  with initial condition y^1(0) = 1
+    y^1(n)    ->  2*n*p + 1
+    y^2(n)    ->  4*n*p*(3*n*p - 3*p + 7)/3 + 1
+    y^3(n)    ->  2*n*p*(4*n**2*p**2 - 12*n*p**2 + 22*n*p + 8*p**2 - 22*p + 19) + 1
+ Solution found
+   y^3  =  2*n*p*(4*n**2*p**2 - 12*n*p**2 + 22*n*p + 8*p**2 - 22*p + 19) + 1
+ Solution found
+   y^2  =  4*n*p*(3*n*p - 3*p + 7)/3 + 1
+ Solving for x^3  with initial condition x^3(0) = -1
+ Solving for x^2  with initial condition x^2(0) = 1
+ Solving for x^1  with initial condition x^1(0) = -1
+    x^1(n)    ->  n*p - 1
+    x^2(n)    ->  n*p*(3*n*p - 3*p - 2)/3 + 1
+    x^3(n)    ->  n*p*(n**2*p**2 - 3*n*p**2 + n*p + 2*p**2 - p + 1) - 1
+ Solution found
+   x^3  =  n*p*(n**2*p**2 - 3*n*p**2 + n*p + 2*p**2 - p + 1) - 1
+ Solution found
+   y^1  =  2*n*p + 1
+ Solving for u1^3  with initial condition u1^3(0) = u1(0)**3
+    u1^3(n)    ->  2
+ Solution found
+   u1^3  =  2
+ Solution found
+   x^1  =  n*p - 1
+ Solving for u2^3  with initial condition u2^3(0) = u2(0)**3
+    u2^3(n)    ->  16
+ Solution found
+   u2^3  =  16
+ Solving for f^3  with initial condition f^3(0) = 0
+    f^3(n)    ->  p
+ Solution found
+   f^3  =  p
+ Solving for s^3  with initial condition s^3(0) = 0
+ Solving for y^2x^1  with initial condition y^2x^1(0) = 1
+ Solving for y^1x^1  with initial condition y^1x^1(0) = 1
+    y^1x^1(n)    ->  n*p*(2*n*p - 2*p + 1) + 1
+    y^2x^1(n)    ->  n*p*(12*n**2*p**2 - 36*n*p**2 + 40*n*p + 24*p**2 - 40*p + 27)/3 + 1
+ Solving for y^1x^2  with initial condition y^1x^2(0) = 1
+    y^1x^2(n)    ->  n*p*(6*n**2*p**2 - 18*n*p**2 + 11*n*p + 12*p**2 - 11*p + 12)/3 + 1
+    s^3(n)    ->  p*(n - 1)*(p**2*(n - 1)**2 - 3*p**2*(n - 1) + 2*p**2 + p*(n - 1) - p + 1) + 2*p*(n - 1)*(4*p**2*(n - 1)**2 - 12*p**2*(n - 1) + 8*p**2 + 22*p*(n - 1) - 22*p + 19) + p*(n - 1)*(6*p**2*(n - 1)**2 - 18*p**2*(n - 1) + 12*p**2 + 11*p*(n - 1) - 11*p + 12) + p*(n - 1)*(12*p**2*(n - 1)**2 - 36*p**2*(n - 1) + 24*p**2 + 40*p*(n - 1) - 40*p + 27) + 32*p*(p*(n - 1) - 1) + 32*p*(2*p*(n - 1) + 1) + 9*p*(-p*(n - 1)*(-3*p*(n - 1) + 3*p + 2)/3 + 1) + 18*p*(p*(n - 1)*(2*p*(n - 1) - 2*p + 1) + 1) + 9*p*(4*p*(n - 1)*(3*p*(n - 1) - 3*p + 7)/3 + 1) + 42*p + 6
+ Solution found
+   s^3  =  p*(n - 1)*(p**2*(n - 1)**2 - 3*p**2*(n - 1) + 2*p**2 + p*(n - 1) - p + 1) + 2*p*(n - 1)*(4*p**2*(n - 1)**2 - 12*p**2*(n - 1) + 8*p**2 + 22*p*(n - 1) - 22*p + 19) + p*(n - 1)*(6*p**2*(n - 1)**2 - 18*p**2*(n - 1) + 12*p**2 + 11*p*(n - 1) - 11*p + 12) + p*(n - 1)*(12*p**2*(n - 1)**2 - 36*p**2*(n - 1) + 24*p**2 + 40*p*(n - 1) - 40*p + 27) + 32*p*(p*(n - 1) - 1) + 32*p*(2*p*(n - 1) + 1) + 9*p*(-p*(n - 1)*(-3*p*(n - 1) + 3*p + 2)/3 + 1) + 18*p*(p*(n - 1)*(2*p*(n - 1) - 2*p + 1) + 1) + 9*p*(4*p*(n - 1)*(3*p*(n - 1) - 3*p + 7)/3 + 1) + 42*p + 6
+ Solution found
+   x^2  =  -n*p*(-3*n*p + 3*p + 2)/3 + 1
+ Solution found
+   y^2x^1  =  n*p*(12*n**2*p**2 - 36*n*p**2 + 40*n*p + 24*p**2 - 40*p + 27)/3 + 1
+ Solution found
+   y^1x^2  =  n*p*(6*n**2*p**2 - 18*n*p**2 + 11*n*p + 12*p**2 - 11*p + 12)/3 + 1
+ Solution found
+   y^1x^1  =  n*p*(2*n*p - 2*p + 1) + 1
+
+Moment based invariants for program stuttering-p, with invariants over [y**3, x**3, u1**3, u2**3, f**3, s**3]:
+ E[y^1] = 2*n*p + 1
+ E[y^2] = 4*n*p*(3*n*p - 3*p + 7)/3 + 1
+ E[y^3] = 2*n*p*(4*n**2*p**2 - 12*n*p**2 + 22*n*p + 8*p**2 - 22*p + 19) + 1
+ E[x^1] = n*p - 1
+ E[x^2] = -n*p*(-3*n*p + 3*p + 2)/3 + 1
+ E[x^3] = n*p*(n**2*p**2 - 3*n*p**2 + n*p + 2*p**2 - p + 1) - 1
+ E[u1^3] = 2
+ E[u2^3] = 16
+ E[f^3] = p
+ E[y^1x^1] = n*p*(2*n*p - 2*p + 1) + 1
+ E[y^2x^1] = n*p*(12*n**2*p**2 - 36*n*p**2 + 40*n*p + 24*p**2 - 40*p + 27)/3 + 1
+ E[y^1x^2] = n*p*(6*n**2*p**2 - 18*n*p**2 + 11*n*p + 12*p**2 - 11*p + 12)/3 + 1
+ E[s^3] = 27*n**3*p**3 - 81*n**2*p**3 + 96*n**2*p**2 + 54*n*p**3 - 96*n*p**2 + 78*n*p + 6
+Computation time 3.589713211998969s.

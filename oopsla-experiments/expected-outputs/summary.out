@@ -1,0 +1,65 @@
+coupon
+E(c) Computation time 0.259854877998805s.
+E(c**2) Computation time 0.28453658199941856s.
+E(c**3) Computation time 0.3122893679992558s.
+
+coupon4
+E(c) Computation time 0.7423772279998957s.
+E(c**2) Computation time 0.8825878909992753s.
+E(c**3) Computation time 1.2526034759994218s.
+
+random-walk-1d
+E(x) Computation time 0.07179724799971154s.
+E(x**2) Computation time 0.115633326000534s.
+E(x**3) Computation time 0.09378890799962392s.
+
+sum-rnd-series
+E(x) Computation time 0.2918413759998657s.
+E(x**2) Computation time 1.0416090460003034s.
+E(x**3) Computation time 2.5838644839986955s.
+
+product-dep-var
+E(p) Computation time 0.3913753300003009s.
+E(p**2) Computation time 1.4936174570011644s.
+E(p**3) Computation time 4.157473863000632s.
+
+random-walk-2d
+E(x) Computation time 0.10675140899911639s.
+E(x**2) Computation time 0.2001849520001997s.
+E(x**3) Computation time 0.16342075399916212s.
+
+binomial
+E(x) Computation time 0.12391424499946879s.
+E(x**2) Computation time 0.3243477690011787s.
+E(x**3) Computation time 0.7897094760010077s.
+
+stuttering-a
+E(s) Computation time 0.2919046930001059s.
+E(s**2) Computation time 1.123145581999779s.
+E(s**3) Computation time 3.3586609560006764s.
+
+stuttering-b
+E(s) Computation time 0.2646101970003656s.
+E(s**2) Computation time 0.9503296429993497s.
+E(s**3) Computation time 2.3480657299987797s.
+
+stuttering-c
+E(s) Computation time 0.7801091050005198s.
+E(s**2) Computation time 12.760454209999807s.
+E(s**3) Computation time 76.6194017050002s.
+
+stuttering-d
+E(s) Computation time 0.792491226000493s.
+E(s**2) Computation time 8.613411725000333s.
+E(s**3) Computation time 26.070864479999727s.
+
+stuttering-p
+E(s) Computation time 0.27429402499910793s.
+E(s**2) Computation time 1.1937577899989265s.
+E(s**3) Computation time 3.589713211998969s.
+
+square
+E(y) Computation time 0.280310484000438s.
+E(y**2) Computation time 0.8722327810010029s.
+E(y**3) Computation time 1.9665012900004513s.
+

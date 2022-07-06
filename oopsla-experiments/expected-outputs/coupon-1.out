@@ -1,0 +1,24 @@
+setting goal:  1
+ --- MBRecs --- 
+    c  =  c/2 + 1/2
+    f  =  1/2
+    d  =  d/2 + 1/2
+
+ Solving for c^1  with initial condition c^1(0) = 0
+    c^1(n)    ->  1 - 2**(-n)
+ Solution found
+   c^1  =  1 - 2**(-n)
+ Solving for f^1  with initial condition f^1(0) = 0
+    f^1(n)    ->  1/2
+ Solution found
+   f^1  =  1/2
+ Solving for d^1  with initial condition d^1(0) = 0
+    d^1(n)    ->  1 - 2**(-n)
+ Solution found
+   d^1  =  1 - 2**(-n)
+
+Moment based invariants for program coupon, with invariants over [c, f, d]:
+ E[c^1] = 1 - 2**(-n)
+ E[f^1] = 1/2
+ E[d^1] = 1 - 2**(-n)
+Computation time 0.259854877998805s.

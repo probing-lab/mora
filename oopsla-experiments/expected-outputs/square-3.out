@@ -1,0 +1,48 @@
+setting goal:  3
+ --- MBRecs --- 
+    x**3  =  x**3 + 3*x**2 + 6*x + 4
+    y**3  =  x**6 + 6*x**5 + 30*x**4 + 80*x**3 + 120*x**2 + 96*x + 32
+    x**4  =  x**4 + 4*x**3 + 12*x**2 + 16*x + 8
+    x  =  x + 1
+    x**6  =  x**6 + 6*x**5 + 30*x**4 + 80*x**3 + 120*x**2 + 96*x + 32
+    x**2  =  x**2 + 2*x + 2
+    x**5  =  x**5 + 5*x**4 + 20*x**3 + 40*x**2 + 40*x + 16
+
+ Solving for x^3  with initial condition x^3(0) = 0
+ Solving for x^2  with initial condition x^2(0) = 0
+ Solving for x^1  with initial condition x^1(0) = 0
+    x^1(n)    ->  n
+    x^2(n)    ->  n*(n + 1)
+    x^3(n)    ->  n**2*(n + 3)
+ Solution found
+   x^3  =  n**2*(n + 3)
+ Solving for y^3  with initial condition y^3(0) = 1
+ Solving for x^6  with initial condition x^6(0) = 0
+ Solving for x^5  with initial condition x^5(0) = 0
+ Solving for x^4  with initial condition x^4(0) = 0
+    x^4(n)    ->  n*(n**3 + 6*n**2 + 3*n - 2)
+    x^5(n)    ->  n**2*(n**3 + 10*n**2 + 15*n - 10)
+    x^6(n)    ->  n*(n**5 + 15*n**4 + 45*n**3 - 15*n**2 - 30*n + 16)
+    y^3(n)    ->  120*n*(n - 1) + 96*n + 80*(n - 1)**2*(n + 2) + 6*(n - 1)**2*(15*n + (n - 1)**3 + 10*(n - 1)**2 - 25) + 30*(n - 1)*(3*n + (n - 1)**3 + 6*(n - 1)**2 - 5) + (n - 1)*(-30*n + (n - 1)**5 + 15*(n - 1)**4 + 45*(n - 1)**3 - 15*(n - 1)**2 + 46) - 64
+ Solution found
+   y^3  =  120*n*(n - 1) + 96*n + 80*(n - 1)**2*(n + 2) + 6*(n - 1)**2*(15*n + (n - 1)**3 + 10*(n - 1)**2 - 25) + 30*(n - 1)*(3*n + (n - 1)**3 + 6*(n - 1)**2 - 5) + (n - 1)*(-30*n + (n - 1)**5 + 15*(n - 1)**4 + 45*(n - 1)**3 - 15*(n - 1)**2 + 46) - 64
+ Solution found
+   x^4  =  n*(n**3 + 6*n**2 + 3*n - 2)
+ Solution found
+   x^1  =  n
+ Solution found
+   x^6  =  n*(n**5 + 15*n**4 + 45*n**3 - 15*n**2 - 30*n + 16)
+ Solution found
+   x^2  =  n*(n + 1)
+ Solution found
+   x^5  =  n**2*(n**3 + 10*n**2 + 15*n - 10)
+
+Moment based invariants for program square, with invariants over [x**3, y**3]:
+ E[x^1] = n
+ E[x^2] = n*(n + 1)
+ E[x^3] = n**2*(n + 3)
+ E[x^4] = n*(n**3 + 6*n**2 + 3*n - 2)
+ E[x^5] = n**2*(n**3 + 10*n**2 + 15*n - 10)
+ E[x^6] = n*(n**5 + 15*n**4 + 45*n**3 - 15*n**2 - 30*n + 16)
+ E[y^3] = n*(n**5 + 15*n**4 + 45*n**3 - 15*n**2 - 30*n + 16)
+Computation time 1.9665012900004513s.

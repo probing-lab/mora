@@ -1,0 +1,24 @@
+setting goal:  3
+ --- MBRecs --- 
+    x**3  =  3*p*x**2 + 3*p*x + p + x**3
+    x**2  =  2*p*x + p + x**2
+    x  =  p + x
+
+ Solving for x^3  with initial condition x^3(0) = 0
+ Solving for x^2  with initial condition x^2(0) = 0
+ Solving for x^1  with initial condition x^1(0) = 0
+    x^1(n)    ->  n*p
+    x^2(n)    ->  n*p*(n*p - p + 1)
+    x^3(n)    ->  n*p*(n**2*p**2 - 3*n*p**2 + 3*n*p + 2*p**2 - 3*p + 1)
+ Solution found
+   x^3  =  n*p*(n**2*p**2 - 3*n*p**2 + 3*n*p + 2*p**2 - 3*p + 1)
+ Solution found
+   x^2  =  n*p*(n*p - p + 1)
+ Solution found
+   x^1  =  n*p
+
+Moment based invariants for program binomial, with invariants over [x**3]:
+ E[x^1] = n*p
+ E[x^2] = n*p*(n*p - p + 1)
+ E[x^3] = n*p*(n**2*p**2 - 3*n*p**2 + 3*n*p + 2*p**2 - 3*p + 1)
+Computation time 0.7897094760010077s.

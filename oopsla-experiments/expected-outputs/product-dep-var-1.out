@@ -1,0 +1,36 @@
+setting goal:  1
+ --- MBRecs --- 
+    p  =  x*y + x/2 + y/2
+    x*y  =  x*y + x/2 + y/2
+    f  =  1/2
+    y  =  y + 1/2
+    x  =  x + 1/2
+
+ Solving for p^1  with initial condition p^1(0) = 0
+ Solving for y^1x^1  with initial condition y^1x^1(0) = 0
+ Solving for y^1  with initial condition y^1(0) = 0
+    y^1(n)    ->  n/2
+ Solving for x^1  with initial condition x^1(0) = 0
+    x^1(n)    ->  n/2
+    y^1x^1(n)    ->  n*(n - 1)/4
+    p^1(n)    ->  n/2 + (n - 2)*(n - 1)/4 - 1/2
+ Solution found
+   p^1  =  n/2 + (n - 2)*(n - 1)/4 - 1/2
+ Solution found
+   y^1x^1  =  n*(n - 1)/4
+ Solving for f^1  with initial condition f^1(0) = 0
+    f^1(n)    ->  1/2
+ Solution found
+   f^1  =  1/2
+ Solution found
+   y^1  =  n/2
+ Solution found
+   x^1  =  n/2
+
+Moment based invariants for program product-dep-var, with invariants over [p, f, y, x]:
+ E[y^1] = n/2
+ E[x^1] = n/2
+ E[y^1x^1] = n*(n - 1)/4
+ E[p^1] = n*(n - 1)/4
+ E[f^1] = 1/2
+Computation time 0.3913753300003009s.

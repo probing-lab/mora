@@ -1,0 +1,18 @@
+setting goal:  1
+ --- MBRecs --- 
+    x  =  n/2 + x + 1/2
+    n  =  n + 1
+
+ Solving for x^1  with initial condition x^1(0) = 0
+ Solving for n^1  with initial condition n^1(0) = 0
+    n^1(n)    ->  n
+    x^1(n)    ->  n*(n + 1)/4
+ Solution found
+   x^1  =  n*(n + 1)/4
+ Solution found
+   n^1  =  n
+
+Moment based invariants for program sum-rnd-series, with invariants over [x, n]:
+ E[n^1] = n
+ E[x^1] = n*(n + 1)/4
+Computation time 0.2918413759998657s.

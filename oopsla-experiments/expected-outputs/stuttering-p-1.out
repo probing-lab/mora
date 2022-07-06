@@ -1,0 +1,42 @@
+setting goal:  1
+ --- MBRecs --- 
+    x  =  p + x
+    y  =  2*p + y
+    u1  =  1
+    s  =  3*p + x + y
+    u2  =  2
+    f  =  p
+
+ Solving for x^1  with initial condition x^1(0) = -1
+    x^1(n)    ->  n*p - 1
+ Solution found
+   x^1  =  n*p - 1
+ Solving for y^1  with initial condition y^1(0) = 1
+    y^1(n)    ->  2*n*p + 1
+ Solution found
+   y^1  =  2*n*p + 1
+ Solving for u1^1  with initial condition u1^1(0) = u1(0)
+    u1^1(n)    ->  1
+ Solution found
+   u1^1  =  1
+ Solving for s^1  with initial condition s^1(0) = 0
+    s^1(n)    ->  3*p*(n - 1) + 3*p
+ Solution found
+   s^1  =  3*p*(n - 1) + 3*p
+ Solving for u2^1  with initial condition u2^1(0) = u2(0)
+    u2^1(n)    ->  2
+ Solution found
+   u2^1  =  2
+ Solving for f^1  with initial condition f^1(0) = 0
+    f^1(n)    ->  p
+ Solution found
+   f^1  =  p
+
+Moment based invariants for program stuttering-p, with invariants over [x, y, s, f, u2, u1]:
+ E[x^1] = n*p - 1
+ E[y^1] = 2*n*p + 1
+ E[u1^1] = 1
+ E[s^1] = 3*n*p
+ E[u2^1] = 2
+ E[f^1] = p
+Computation time 0.27429402499910793s.

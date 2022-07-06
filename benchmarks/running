@@ -1,7 +1,0 @@
-
-x = 0
-while true:
-    u = RV(uniform, 0, b)
-    g = RV(gauss, 0, 1)
-    x = x - u @ 1/2; x + u @ 1/2
-    y = y + x + g @ 1

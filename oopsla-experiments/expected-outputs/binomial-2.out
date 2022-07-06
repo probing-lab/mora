@@ -1,0 +1,18 @@
+setting goal:  2
+ --- MBRecs --- 
+    x**2  =  2*p*x + p + x**2
+    x  =  p + x
+
+ Solving for x^2  with initial condition x^2(0) = 0
+ Solving for x^1  with initial condition x^1(0) = 0
+    x^1(n)    ->  n*p
+    x^2(n)    ->  n*p*(n*p - p + 1)
+ Solution found
+   x^2  =  n*p*(n*p - p + 1)
+ Solution found
+   x^1  =  n*p
+
+Moment based invariants for program binomial, with invariants over [x**2]:
+ E[x^1] = n*p
+ E[x^2] = n*p*(n*p - p + 1)
+Computation time 0.3243477690011787s.

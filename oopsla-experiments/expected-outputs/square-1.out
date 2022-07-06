@@ -1,0 +1,24 @@
+setting goal:  1
+ --- MBRecs --- 
+    x  =  x + 1
+    y  =  x**2 + 2*x + 2
+    x**2  =  x**2 + 2*x + 2
+
+ Solving for x^1  with initial condition x^1(0) = 0
+    x^1(n)    ->  n
+ Solution found
+   x^1  =  n
+ Solving for y^1  with initial condition y^1(0) = 1
+ Solving for x^2  with initial condition x^2(0) = 0
+    x^2(n)    ->  n*(n + 1)
+    y^1(n)    ->  n*(n - 1) + 2*n
+ Solution found
+   y^1  =  n*(n - 1) + 2*n
+ Solution found
+   x^2  =  n*(n + 1)
+
+Moment based invariants for program square, with invariants over [x, y]:
+ E[x^1] = n
+ E[x^2] = n*(n + 1)
+ E[y^1] = n*(n + 1)
+Computation time 0.280310484000438s.

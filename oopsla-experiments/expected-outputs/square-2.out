@@ -1,0 +1,36 @@
+setting goal:  2
+ --- MBRecs --- 
+    x**2  =  x**2 + 2*x + 2
+    y**2  =  x**4 + 4*x**3 + 12*x**2 + 16*x + 8
+    x  =  x + 1
+    x**4  =  x**4 + 4*x**3 + 12*x**2 + 16*x + 8
+    x**3  =  x**3 + 3*x**2 + 6*x + 4
+
+ Solving for x^2  with initial condition x^2(0) = 0
+ Solving for x^1  with initial condition x^1(0) = 0
+    x^1(n)    ->  n
+    x^2(n)    ->  n*(n + 1)
+ Solution found
+   x^2  =  n*(n + 1)
+ Solving for y^2  with initial condition y^2(0) = 1
+ Solving for x^4  with initial condition x^4(0) = 0
+ Solving for x^3  with initial condition x^3(0) = 0
+    x^3(n)    ->  n**2*(n + 3)
+    x^4(n)    ->  n*(n**3 + 6*n**2 + 3*n - 2)
+    y^2(n)    ->  12*n*(n - 1) + 16*n + 4*(n - 1)**2*(n + 2) + (n - 1)*(3*n + (n - 1)**3 + 6*(n - 1)**2 - 5) - 8
+ Solution found
+   y^2  =  12*n*(n - 1) + 16*n + 4*(n - 1)**2*(n + 2) + (n - 1)*(3*n + (n - 1)**3 + 6*(n - 1)**2 - 5) - 8
+ Solution found
+   x^1  =  n
+ Solution found
+   x^4  =  n*(n**3 + 6*n**2 + 3*n - 2)
+ Solution found
+   x^3  =  n**2*(n + 3)
+
+Moment based invariants for program square, with invariants over [x**2, y**2]:
+ E[x^1] = n
+ E[x^2] = n*(n + 1)
+ E[x^3] = n**2*(n + 3)
+ E[x^4] = n*(n**3 + 6*n**2 + 3*n - 2)
+ E[y^2] = n*(n**3 + 6*n**2 + 3*n - 2)
+Computation time 0.8722327810010029s.

@@ -1,0 +1,42 @@
+setting goal:  3
+ --- MBRecs --- 
+    f**3  =  1/2
+    g**3  =  1/2
+    b**3  =  3*b**3/4 + 1/4
+    a**3  =  3*a**3/4 + 1/4
+    d**3  =  3*d**3/4 + 1/4
+    c**3  =  3*c**3/4 + 1/4
+
+ Solving for f^3  with initial condition f^3(0) = 0
+    f^3(n)    ->  1/2
+ Solution found
+   f^3  =  1/2
+ Solving for g^3  with initial condition g^3(0) = 0
+    g^3(n)    ->  1/2
+ Solution found
+   g^3  =  1/2
+ Solving for b^3  with initial condition b^3(0) = 0
+    b^3(n)    ->  -(3/4)**n + 1
+ Solution found
+   b^3  =  -(3/4)**n + 1
+ Solving for a^3  with initial condition a^3(0) = 0
+    a^3(n)    ->  -(3/4)**n + 1
+ Solution found
+   a^3  =  -(3/4)**n + 1
+ Solving for d^3  with initial condition d^3(0) = 0
+    d^3(n)    ->  -(3/4)**n + 1
+ Solution found
+   d^3  =  -(3/4)**n + 1
+ Solving for c^3  with initial condition c^3(0) = 0
+    c^3(n)    ->  -(3/4)**n + 1
+ Solution found
+   c^3  =  -(3/4)**n + 1
+
+Moment based invariants for program coupon4, with invariants over [f**3, g**3, b**3, a**3, d**3, c**3]:
+ E[f^3] = 1/2
+ E[g^3] = 1/2
+ E[b^3] = -3**n*4**(-n) + 1
+ E[a^3] = -3**n*4**(-n) + 1
+ E[d^3] = -3**n*4**(-n) + 1
+ E[c^3] = -3**n*4**(-n) + 1
+Computation time 1.2526034759994218s.
