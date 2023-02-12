@@ -1,3 +1,5 @@
+Note  that Mora has now been superseded by tool Polar. Please check Polar (<https://github.com/probing-lab/polar>) for the up-to-date tool for probabilistic program analysis.
+
 # Installation
 
 Mora needs to following dependencies:
